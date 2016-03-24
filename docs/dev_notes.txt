@@ -17,7 +17,11 @@ import pyalexa
 
 -- to register with test pypi
 python setup.py register -r test
-twine upload -r test dist/pyalexa-1.0.0*
+twine upload -r test dist/pyalexa-skill-1.0.0*
+
+-- to register with pypi
+python setup.py register
+twine upload dist/pyalexa-skill-1.0.0*
 
 -- in project to include it in
-pip install -i https://testpypi.python.org/pypi pyalexa
+pip install -i https://testpypi.python.org/pypi pyalexa-skill

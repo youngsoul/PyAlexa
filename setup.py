@@ -4,10 +4,10 @@ import os
 
 from setuptools import setup, find_packages
 
-__version__ = "0.0.2"
-__title__ = "pyalexa"
+__version__ = "0.0.1"
+__title__ = "pyalexa-skill"
 __description__ = "Python module with a base class to support an Alexa skill set, and scripts to build an AWS python distibution"
-__uri__ = "https://pyalexa.readthedocs.org/"
+__uri__ = "https://pyalexa-skill.readthedocs.org/"
 __author__ = "Patrick Ryan"
 __email__ = "pat_ryan_99@yahoo.com"
 __license__ = "Public Domain"
@@ -15,9 +15,9 @@ __copyright__ = "Copyright (c) 2016 Patrick Ryan"
 
 ###############################################################################
 
-NAME = "pyalexa"
+NAME = "pyalexa-skill"
 PACKAGES = find_packages(where=".")
-KEYWORDS = ["alexa"]
+KEYWORDS = ["alexa", "skill"]
 CLASSIFIERS = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
