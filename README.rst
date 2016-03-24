@@ -39,7 +39,7 @@ AlexaDeploymentHandler class
 This class is a reference implementation that does nothing useful.  All Alexa
 handlers are handled the same way.
 
-To create the concrete implementation use the following::
+To create the concrete implementation use the following:::
   from pyalexaskill import AlexaBaseHandler
   class MyConcreteAlexaHandler(AlexaBaseHandler):
       pass
