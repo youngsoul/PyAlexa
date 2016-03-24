@@ -2,8 +2,11 @@
 PyAlexa: Python module to help in the building of Alexa skill sets
 ==================================================================
 
+PyPI Package to search for is: pyalexa-skill
+============================================
 
-``PyAlexa`` is an Open Source licensed Python package with a base class that support the necessary methods for an Alexa
+
+``PyAlexa-Skill`` is an Open Source licensed Python package with a base class that support the necessary methods for an Alexa
 Skill set and two scripts to help with the creation of the main entry point and the packaging
 of the AWS Lambda Function for the Alexa Skill Set.
 
@@ -86,3 +89,7 @@ variable in the create_deployment.py file.
 
 When this script is done running, there should be a 'deployment_n.zip' file in the deployments directory.
 It is that file that needs to be upload to the Amazon Lambda console.
+
+Test Project
+------------
+https://github.com/youngsoul/PyAlexaSkillTest
