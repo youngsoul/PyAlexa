@@ -42,7 +42,7 @@ handlers are handled the same way.
 To create the concrete implementation use the following: ::
 
   from pyalexaskill import AlexaBaseHandler
-  class MyConcreteAlexaHandler(AlexaBaseHandler):
+  class MyConcreteAlexaHandler(AlexaBaseHandler.AlexaBaseHandler):
       # implement the abstract methods
 
 main.py
