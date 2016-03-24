@@ -1,0 +1,23 @@
+
+https://hynek.me/articles/sharing-your-labor-of-love-pypi-quick-and-dirty/
+
+command line: (no bdist_wheel)
+python setup.py sdist
+
+To test build
+rm -rf 27-sdist
+virtualenv 27-sdist
+cd 27-sdist/bin
+pip install ../../dist/pyalexa-xyz.tar.gz
+
+--open python console
+bin/python
+import pyalexa
+
+
+-- to register with test pypi
+python setup.py register -r test
+twine upload -r test dist/pyalexa-1.0.0*
+
+-- in project to include it in
+pip install -i https://testpypi.python.org/pypi pyalexa

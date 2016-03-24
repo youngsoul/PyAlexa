@@ -1,0 +1,4 @@
+include *.rst *.txt LICENSE.txt
+recursive-include bin *.py
+recursive-include docs *.rst
+recursive-include pyalexa *.py
