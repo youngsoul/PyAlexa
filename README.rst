@@ -65,7 +65,7 @@ create_deployment.py script to install the necessary 3rd party libraries that
 your Alexa skill might need.  Any library specified in the requirements.txt
 file will be installed into your deployment directory.
 
-create_aws_deployment.py
+create_aws_lambda.py
 ------------------------
 This script creates a zip file per the Amazon lambda specification, such that
 it is suitable to upload as your lambda function implementation.
