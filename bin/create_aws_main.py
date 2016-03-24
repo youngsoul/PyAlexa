@@ -61,10 +61,12 @@ def main(argv):
         opts, args = getopt.getopt(argv, "hr:", ["root="])
     except getopt.GetoptError:
         print 'create_aws_main.py -r <root project dir>'
+        print 'if -r option not supplied it will look for PWD environment variable'
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
             print 'create_aws_main.py -r <root project dir>'
+            print 'if -r option not supplied it will look for PWD environment variable'
             sys.exit()
         elif opt in ("-r", "--root"):
             root_project_dir = arg

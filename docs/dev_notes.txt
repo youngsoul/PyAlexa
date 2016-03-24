@@ -14,7 +14,23 @@ pip install ../../dist/pyalexa-xyz.tar.gz
 bin/python
 import pyalexa
 
+add file:  ~/.pypirc
+----------------------------------------------------
+[distutils]
+index-servers=
+    pypi
+    test
 
+[test]
+repository = https://testpypi.python.org/pypi
+username =
+password =
+
+[pypi]
+repository = https://pypi.python.org/pypi
+username =
+password =
+----------------------------------------------------
 -- to register with test pypi
 python setup.py register -r test
 twine upload -r test dist/pyalexa-skill-1.0.0*
