@@ -14,4 +14,12 @@ Changes:
 
 Initial Release and implementation
 
+0.0.5 (2016-23-03)
+------------------
+
+Changes:
+~~~~~~~~
+* changed create_aws_deployment.py to create_aws_lambda.py
+* changed module name from pyalexa-skill to pyalexaskill
+
 

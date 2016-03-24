@@ -65,5 +65,5 @@ if __name__ == "__main__":
         zip_safe=False,
         classifiers=CLASSIFIERS,
         install_requires=INSTALL_REQUIRES,
-        scripts=['bin/create_aws_deployment.py','bin/create_aws_main.py']
+        scripts=['bin/create_aws_lambda.py','bin/create_aws_main.py']
     )
