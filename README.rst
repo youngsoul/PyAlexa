@@ -43,7 +43,7 @@ To create the concrete implementation use the following: ::
 
   from pyalexaskill import AlexaBaseHandler
   class MyConcreteAlexaHandler(AlexaBaseHandler):
-      pass
+      # implement the abstract methods
 
 main.py
 -------
