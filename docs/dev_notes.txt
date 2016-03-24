@@ -21,7 +21,7 @@ twine upload -r test dist/pyalexa-skill-1.0.0*
 
 -- to register with pypi
 python setup.py register
-twine upload dist/pyalexa-skill-1.0.0*
+twine upload dist/pyalexa-skill-0.0.1*
 
 -- in project to include it in
 pip install -i https://testpypi.python.org/pypi pyalexa-skill
