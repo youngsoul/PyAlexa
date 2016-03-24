@@ -10,7 +10,7 @@ of the AWS Lambda Function for the Alexa Skill Set.
 
 
 AlexaBaseHandler class
-^^^^^^^^^^^^^^^^^^^^^^
+----------------------
 
 The AlexaBaseHandler class is an abstract class that provides the necessary
 framework to build the necessary response hooks for an Alexa application.
@@ -19,33 +19,38 @@ All of the abstract methods of this class must be implemented by the
 concrete implementation class.
 
 process_request
-^^^^^^^^^^^^^^^
+---------------
 This method will take the 2 parameters that are sent to the lambda function
 and determine which of the Alexa handlers to invoke.
 
 _build_speechlet_response
-^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------------------
 This method ( from the Alexa color example ) will put together the speechlet portion
 into a properly formatted json message.  This is typically called by the
 concrete implementations of the AlexaBaseHandler.
 
 _build_response
-^^^^^^^^^^^^^^^
+---------------
 This method (from the Alexa color example ) will construct a properly formatted
 response message so the Amazon Echo knows what to respond with.
 
 AlexaDeploymentHandler class
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------
 This class is a reference implementation that does nothing useful.  All Alexa
 handlers are handled the same way.
 
+To create the concrete implementation use the following::
+  from pyalexaskill import AlexaBaseHandler
+  class MyConcreteAlexaHandler(AlexaBaseHandler):
+      pass
+
 main.py
-^^^^^^^
+-------
 This file contains the main entry point of the lambda function that is called
 for the Alexa skill.
 
 lambda_handler(event, context)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+------------------------------
 This method ( which can be called anything, you just need to configure it in
 the lambda handler ), is the method that is called with the 2 parameters.
 
@@ -53,19 +58,19 @@ This method will typically instantiate an concrete implementation of the
 AlexaBaseHandler and delegate to the process_request method.
 
 requirements.txt
-^^^^^^^^^^^^^^^^
+----------------
 This file is the standard Python requirements file.  This file is used by the
 create_deployment.py script to install the necessary 3rd party libraries that
 your Alexa skill might need.  Any library specified in the requirements.txt
 file will be installed into your deployment directory.
 
-create_aws_deployment
-^^^^^^^^^^^^^^^^^^^^^
+create_aws_deployment.py
+------------------------
 This script creates a zip file per the Amazon lambda specification, such that
 it is suitable to upload as your lambda function implementation.
 
-create_aws_main
-^^^^^^^^^^^^^^^
+create_aws_main.py
+------------------
 This script creates a template main entry point
 
 All deployments are stored in the deployments subdirectory and follow the naming
