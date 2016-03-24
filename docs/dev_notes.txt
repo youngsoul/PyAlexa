@@ -37,7 +37,11 @@ twine upload -r test dist/pyalexa-skill-1.0.0*
 
 -- to register with pypi
 python setup.py register
+
+-- to upload a new version of the module
+* activate virtual env
+python setup.py sdist
 twine upload dist/pyalexa-skill-0.0.1*
 
--- in project to include it in
+-- test install in project
 pip install -i https://testpypi.python.org/pypi pyalexa-skill
