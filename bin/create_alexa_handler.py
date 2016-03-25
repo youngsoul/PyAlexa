@@ -11,10 +11,10 @@ Script will create a concrete implementation of the Alexa Handler.
 """
 
 handler_file_template = """
-from pyalexaskill import AlexaBaseHandler
+from pyalexaskill.AlexaBaseHandler import AlexaBaseHandler
 
 
-class AlexaDeploymentTestHandler(AlexaBaseHandler.AlexaBaseHandler):
+class AlexaDeploymentTestHandler(AlexaBaseHandler):
 
     # Sample concrete implementation of the AlexaBaseHandler to test the
     # deployment scripts and process.

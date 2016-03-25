@@ -29,3 +29,9 @@ Changes:
 ~~~~~~~~
 * add create_alexa_handler.py script to create a handler template
 
+0.0.7 (2016-25-03)
+------------------
+
+Changes:
+~~~~~~~~
+* changed the handler template generator
