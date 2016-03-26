@@ -73,6 +73,11 @@ create_aws_lambda.py
 This script creates a zip file per the Amazon lambda specification, such that
 it is suitable to upload as your lambda function implementation.
 
+execute like: ::
+
+  python create_aws_lambda.py -r <rootdir> -i "list,of,all,python,files,to,include"
+
+
 create_aws_main.py
 ------------------
 This script creates a template main entry point
@@ -90,12 +95,21 @@ variable in the create_deployment.py file.
 When this script is done running, there should be a 'deployment_n.zip' file in the deployments directory.
 It is that file that needs to be upload to the Amazon Lambda console.
 
+execute like: ::
+
+    python create_aws_main.py
+
+
 create_alexa_handler.py
 -----------------------
 This script creates a template concrete handler class.
 
 This template can be used as the starting point to create the necessary implementation
 details for the handler.
+
+execute like: ::
+
+    python create_alexa_handler.py
 
 
 Test Project

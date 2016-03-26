@@ -35,3 +35,11 @@ Changes:
 Changes:
 ~~~~~~~~
 * changed the handler template generator
+
+0.0.8 (2016-25-03)
+------------------
+
+Changes:
+~~~~~~~~
+* remove the shebang in the create_xyz scripts so now the user has to specify which python to use
+

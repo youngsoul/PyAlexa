@@ -4,7 +4,7 @@ import os
 
 from setuptools import setup, find_packages
 
-__version__ = "0.0.7"
+__version__ = "0.0.8"
 __title__ = "pyalexa-skill"
 __description__ = "Python module with a base class to support an Alexa skill set, and scripts to build an AWS python distibution"
 __uri__ = "https://github.com/youngsoul/PyAlexa"
