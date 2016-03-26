@@ -43,3 +43,10 @@ Changes:
 ~~~~~~~~
 * remove the shebang in the create_xyz scripts so now the user has to specify which python to use
 
+0.0.9 (2016-25-03)
+------------------
+
+Changes:
+~~~~~~~~
+* log exception in the process_request method
+

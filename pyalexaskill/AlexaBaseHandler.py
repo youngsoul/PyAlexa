@@ -87,6 +87,7 @@ class AlexaBaseHandler(object):
                 response = self.on_session_ended(event['request'], event['session'])
 
         except Exception as exc:
+            self.logger.error(exc.message)
             response = self.on_processing_error(event, context, exc)
 
         return response
