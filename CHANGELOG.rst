@@ -50,3 +50,10 @@ Changes:
 ~~~~~~~~
 * log exception in the process_request method
 
+0.1.0 (2016-25-03)
+------------------
+
+Changes:
+~~~~~~~~
+* put the shebang back
+
