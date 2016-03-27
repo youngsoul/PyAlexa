@@ -50,10 +50,18 @@ Changes:
 ~~~~~~~~
 * log exception in the process_request method
 
+
 0.1.0 (2016-25-03)
 ------------------
 
 Changes:
 ~~~~~~~~
 * put the shebang back
+
+0.1.1 (2016-27-03)
+------------------
+
+Changes:
+~~~~~~~~
+* add app_id to base handler, and check app_id in process_request if it is not None
 

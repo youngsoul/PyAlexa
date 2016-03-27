@@ -13,9 +13,10 @@ class AlexaBaseHandler(object):
 
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self):
+    def __init__(self, app_id=None):
         self.logger = logging.getLogger()
         self.logger.setLevel(logging.INFO)
+        self.app_id = app_id
 
     @abc.abstractmethod
     def on_launch(self, launch_request, session):
@@ -74,6 +75,9 @@ class AlexaBaseHandler(object):
         """
         # if its a new session, run the new session code
         try:
+            if(self.app_id and event['session']['application']['applicationId'] != self.app_id):
+                raise ValueError("Invalid Application ID")
+
             response = None
             if event['session']['new']:
                 self.on_session_started({'requestId': event['request']['requestId']}, event['session'])
