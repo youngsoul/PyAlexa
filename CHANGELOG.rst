@@ -65,3 +65,9 @@ Changes:
 ~~~~~~~~
 * add app_id to base handler, and check app_id in process_request if it is not None
 
+0.1.2 (2016-28-03)
+------------------
+
+Changes:
+~~~~~~~~
+* documentation update
