@@ -65,9 +65,19 @@ Changes:
 ~~~~~~~~
 * add app_id to base handler, and check app_id in process_request if it is not None
 
+
 0.1.2 (2016-28-03)
 ------------------
 
 Changes:
 ~~~~~~~~
 * documentation update
+
+
+0.1.3 (2016-29-03)
+------------------
+
+Changes:
+~~~~~~~~
+* add script command create_alexa_test_skills.py to add sample intent schema and sample utterances to go along with the sample Alexa handler that is created.
+

@@ -165,12 +165,12 @@ def main(argv):
     try:
         opts, args = getopt.getopt(argv, "hr:i:", ["root=", "include="])
     except getopt.GetoptError:
-        print 'create_aws_deployment.py -r <root project dir> -i <include files>'
+        print 'create_aws_lambda.py -r <root project dir> -i <include files>'
         print 'if -r option not supplied it will look for PWD environment variable'
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
-            print 'create_aws_deployment.py -r <root project dir> -i <include files>'
+            print 'create_aws_lambda.py -r <root project dir> -i <include files>'
             print 'if -r option not supplied it will look for PWD environment variable'
             print '<include files> are relative to root project dir'
             sys.exit()
