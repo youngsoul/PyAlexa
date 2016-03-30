@@ -112,6 +112,18 @@ activate your virtualenv and execute like: ::
     create_alexa_handler.py
 
 
+create_alexa_test_skills.py
+---------------------------
+This script creates a template utterance and intent schema.
+
+This template can be used as the starting point to create the necessary implementation
+details for an actual utterance and intent schema.
+
+activate your virtualenv and execute like: ::
+
+    create_alexa_test_skills.py
+
+
 Test Project
 ------------
 https://github.com/youngsoul/PyAlexaSkillTest
