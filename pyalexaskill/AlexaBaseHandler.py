@@ -44,6 +44,76 @@ class AlexaBaseHandler(object):
         pass
 
     @abc.abstractmethod
+    def on_help_intent(self, intent_request, session):
+        """
+        Implement the built in help intent.
+        :param intent_request:
+        :param session:
+        :return:
+        """
+        raise ValueError("Help Intent was not implemented")
+
+    @abc.abstractmethod
+    def on_stop_intent(self, intent_request, session):
+        """
+        Implement the built in stop intent.
+        :param intent_request:
+        :param session:
+        :return:
+        """
+        raise ValueError("Stop Intent was not implemented")
+
+    @abc.abstractmethod
+    def on_cancel_intent(self, intent_request, session):
+        """
+        Implement the built in cancel intent.
+        :param intent_request:
+        :param session:
+        :return:
+        """
+        raise ValueError("Cancel Intent was not implemented")
+
+    @abc.abstractmethod
+    def on_no_intent(self, intent_request, session):
+        """
+        Implement the built in no (or negative) intent.
+        :param intent_request:
+        :param session:
+        :return:
+        """
+        raise ValueError("Answer No Intent was not implemented")
+
+    @abc.abstractmethod
+    def on_yes_intent(self, intent_request, session):
+        """
+        Implement the built in yes (or positive) intent.
+        :param intent_request:
+        :param session:
+        :return:
+        """
+        raise ValueError("Answer Yes Intent was not implemented")
+
+    @abc.abstractmethod
+    def on_repeat_intent(self, intent_request, session):
+        """
+        Implement the built in repeat intent.
+        :param intent_request:
+        :param session:
+        :return:
+        """
+        raise ValueError("Answer Repeat Intent was not implemented")
+
+    @abc.abstractmethod
+    def on_start_over_intent(self, intent_request, session):
+        """
+        Implement the built in start over intent.
+        :param intent_request:
+        :param session:
+        :return:
+        """
+        raise ValueError("Start Over Intent was not implemented")
+
+    @abc.abstractmethod
     def on_session_ended(self, session_end_request, session):
         """
         Implement the SessionEndRequest
@@ -86,7 +156,23 @@ class AlexaBaseHandler(object):
             if event['request']['type'] == "LaunchRequest":
                 response = self.on_launch(event['request'], event['session'])
             elif event['request']['type'] == "IntentRequest":
-                response = self.on_intent(event['request'], event['session'])
+                intent_name = self._get_intent_name(event['request'])
+                if intent_name == "AMAZON.HelpIntent":
+                    response = self.on_help_intent(event['request'],event['session'])
+                elif intent_name == "AMAZON.StopIntent":
+                    response = self.on_stop_intent(event['request'], event['session'])
+                elif intent_name == "AMAZON.CancelIntent":
+                    response = self.on_cancel_intent(event['request'], event['session'])
+                elif intent_name == "AMAZON.NoIntent":
+                    response = self.on_no_intent(event['request'], event['session'])
+                elif intent_name == "AMAZON.RepeatIntent":
+                    response = self.on_repeat_intent(event['request'], event['session'])
+                elif intent_name == "AMAZON.StartOverIntent":
+                    response = self.on_start_over_intent(event['request'], event['session'])
+                elif intent_name == "AMAZON.YesIntent":
+                    response = self.on_yes_intent(event['request'], event['session'])
+                else:
+                    response = self.on_intent(event['request'], event['session'])
             elif event['request']['type'] == "SessionEndedRequest":
                 response = self.on_session_ended(event['request'], event['session'])
 

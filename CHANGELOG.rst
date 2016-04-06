@@ -81,3 +81,10 @@ Changes:
 ~~~~~~~~
 * add script command create_alexa_test_skills.py to add sample intent schema and sample utterances to go along with the sample Alexa handler that is created.
 
+0.1.5 (2016-4-04)
+-----------------
+
+Changes:
+~~~~~~~~
+* added abstract methods for the built-in intents
+

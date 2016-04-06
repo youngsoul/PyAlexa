@@ -19,7 +19,8 @@ The AlexaBaseHandler class is an abstract class that provides the necessary
 framework to build the necessary response hooks for an Alexa application.
 
 All of the abstract methods of this class must be implemented by the
-concrete implementation class.
+concrete implementation class.  See the base class for details on the
+abstract methods.
 
 process_request
 ---------------
