@@ -94,3 +94,10 @@ Changes:
 Changes:
 ~~~~~~~~
 * updated the handler template to include the new intents
+
+0.1.7 (2016-4-20)
+-----------------
+
+Changes:
+~~~~~~~~
+* provide better sample implementations in the template
