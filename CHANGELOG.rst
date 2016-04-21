@@ -88,3 +88,9 @@ Changes:
 ~~~~~~~~
 * added abstract methods for the built-in intents
 
+0.1.6 (2016-4-20)
+-----------------
+
+Changes:
+~~~~~~~~
+* updated the handler template to include the new intents
