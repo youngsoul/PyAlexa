@@ -58,9 +58,29 @@ class AlexaDeploymentTestHandler(AlexaBaseHandler):
     def on_intent(self, intent_request, session):
         return self._test_response("on intent")
 
-
     def on_session_ended(self, session_end_request, session):
         return self._test_response("on session end")
+
+    def on_help_intent(self, intent_request, session):
+        return self._test_response("on help intent")
+
+    def on_stop_intent(self, intent_request, session):
+        return self._test_response("on stop intent")
+
+    def on_cancel_intent(self, intent_request, session):
+        return self._test_response("on cancel intent")
+
+    def on_no_intent(self, intent_request, session):
+        return self._test_response("on no intent")
+
+    def on_yes_intent(self, intent_request, session):
+        return self._test_response("on yes intent")
+
+    def on_repeat_intent(self, intent_request, session):
+        return self._test_response("on repeat intent")
+
+    def on_start_over_intent(self, intent_request, session):
+        return self._test_response("on start over intent")
 
 """
 
