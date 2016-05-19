@@ -101,3 +101,12 @@ Changes:
 Changes:
 ~~~~~~~~
 * provide better sample implementations in the template
+
+0.1.9 (2016-5-21)
+-----------------
+
+Changes:
+~~~~~~~~
+* updated create_aws_lambda.py to not save the deployment directory, instead delete it
+* keeps track of next deployment number in a dot file ( .deployment_number.txt )
+* prints the name and location of the created deployment zip.

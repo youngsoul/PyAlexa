@@ -4,6 +4,7 @@ import subprocess
 import zipfile
 import sys
 import getopt
+import shutil
 
 """
 Script will create an AWS Lambda function deployment.
@@ -196,8 +197,29 @@ def main(argv):
     install_requirements = _read_requirements()
     _install_requirements(install_requirements, deployment_dir)
 
-    zipdir(deployment_dir, "{0}/{1}.zip".format(root_deployments_dir, deployment_name))
+    deployment_num_file_name = "{0}/.deployment_number.txt".format(root_deployments_dir)
+    if not os.path.isfile(deployment_num_file_name):
+        # first time - be safe and start at deployment 100
+        with open(deployment_num_file_name, 'w') as f:
+            f.write("100\n")
 
+    next_deployment_number = None
+    with open(deployment_num_file_name, 'r+') as f:
+        line1 = f.readline()
+        try:
+            next_deployment_number = int(line1.strip()) + 1
+        except:
+            next_deployment_number = 1
+        while os.path.exists("{0}/deployment_{1}".format(root_deployments_dir, next_deployment_number)) or os.path.exists("{0}/deployment_{1}.zip".format(root_deployments_dir, next_deployment_number)):
+            next_deployment_number = next_deployment_number + 1
+
+        f.seek(0)
+        f.write("{0}\n".format(next_deployment_number))
+
+    deployment_zip_filename = "{0}/deployment_{1}.zip".format(root_deployments_dir, next_deployment_number)
+    zipdir(deployment_dir, deployment_zip_filename)
+    shutil.rmtree(deployment_dir, ignore_errors=True)
+    print("Created deployment zip file: {0}".format(deployment_zip_filename))
 
 if __name__ == "__main__":
     main(sys.argv[1:])
