@@ -87,10 +87,10 @@ def _install_requirements(deployment_requirements, deployment_dir):
                 return_code = subprocess.call(cmd, shell=False)
 
 
-def _copy_deployment_files(deployment_dir):
-    for deployment_file in deployment_files:
-        if os.path.exists(deployment_file):
-            cmd = "cp {0} {1}".format(deployment_file, deployment_dir).split()
+def _copy_deployment_files(deployment_data):
+    for item in deployment_data:
+        if os.path.exists(item['from']):
+            cmd = "cp {0} {1}".format(item['from'], item['to']).split()
             return_code = subprocess.call(cmd, shell=False)
         else:
             raise NameError("Deployment file not found [{0}]".format(deployment_file))
@@ -159,6 +159,12 @@ def zipdir(dirPath=None, zipFilePath=None, includeDirInZip=False):
     outFile.close()
 
 
+def make_target_dirs(target_paths):
+    for dirname in set(os.path.dirname(p) for p in target_paths):
+        if not os.path.isdir(dirname):
+            os.makedirs(dirname)
+
+
 def main(argv):
     global root_deployments_dir, root_project_dir
     include_files = ''
@@ -188,12 +194,19 @@ def main(argv):
     if not include_files:
         raise ValueError("Must supply -i or --include option")
 
-    for include_file in include_files.split(","):
-        deployment_files.append("{0}/{1}".format(root_project_dir,include_file.strip()))
-
     root_deployments_dir = "{0}/deployments".format(root_project_dir)
     (deployment_dir, deployment_name) = _make_deployment_dir()
-    _copy_deployment_files(deployment_dir)
+
+    for include_file in include_files.split(","):
+        d = {
+            "from": "{0}/{1}".format(root_project_dir, include_file.strip()),
+            "to": "{0}/{1}".format(deployment_dir, include_file.strip())
+        }
+        make_target_dirs([d['to']])
+        deployment_files.append(d)
+
+    _copy_deployment_files(deployment_files)
+
     install_requirements = _read_requirements()
     _install_requirements(install_requirements, deployment_dir)
 
@@ -210,7 +223,9 @@ def main(argv):
             next_deployment_number = int(line1.strip()) + 1
         except:
             next_deployment_number = 1
-        while os.path.exists("{0}/deployment_{1}".format(root_deployments_dir, next_deployment_number)) or os.path.exists("{0}/deployment_{1}.zip".format(root_deployments_dir, next_deployment_number)):
+        while os.path.exists(
+                "{0}/deployment_{1}".format(root_deployments_dir, next_deployment_number)) or os.path.exists(
+                "{0}/deployment_{1}.zip".format(root_deployments_dir, next_deployment_number)):
             next_deployment_number = next_deployment_number + 1
 
         f.seek(0)

@@ -110,3 +110,12 @@ Changes:
 * updated create_aws_lambda.py to not save the deployment directory, instead delete it
 * keeps track of next deployment number in a dot file ( .deployment_number.txt )
 * prints the name and location of the created deployment zip.
+
+0.1.10 (2016-9-03)
+------------------
+
+Changes:
+~~~~~~~~
+* update create_aws_lambda.py to allow for files in directories below the root directory
+and they will be copied into a corresponding deployment directory.
+
