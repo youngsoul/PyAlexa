@@ -170,6 +170,7 @@ class AlexaBaseHandler(object):
         :param context:
         :return:speechlet_response, directive, None
         """
+        response = None
         self.logger.info("_handle_amazon_request: event: {0}".format(event))
         request_type = event['request']['type']
         self.logger.info("_handle_amazon_request: {0}".format(request_type))
@@ -184,12 +185,14 @@ class AlexaBaseHandler(object):
             self.logger.info("_handle_amazon_request: {0}".format(request_type_method_name))
             if hasattr(self, request_type_method_name):
                 try:
-                    return getattr(self, request_type_method_name)(event, context)
+                    response = getattr(self, request_type_method_name)(event, context)
                 except:
                     self.logger.error("ERROR: _handle_amazon_request: {0}".format(request_type_method_name))
             else:
                 self.logger.error("_handle_amazon_request: {0} method not found".format(request_type_method_name))
                 raise ValueError("No method with name: {0} exists in class".format(request_type_method_name))
+
+        return response
 
     def _handle_amazon_intent(self, event, context):
         """
