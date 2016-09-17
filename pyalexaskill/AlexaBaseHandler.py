@@ -104,7 +104,7 @@ class AlexaBaseHandler(object):
         raise ValueError("Answer Repeat Intent was not implemented")
 
     @abc.abstractmethod
-    def on_start_over_intent(self, intent_request, session):
+    def on_startover_intent(self, intent_request, session):
         """
         Implement the built in start over intent.
         :param intent_request:
@@ -135,6 +135,89 @@ class AlexaBaseHandler(object):
         """
         pass
 
+    def check_app_id(self, event):
+        """
+        Check the App id to make sure it is valid.
+        :param event:
+        :return: True - app id is valid, False - app id is invalid
+        """
+        valid_app_id = False
+        try:
+            if (self.app_id and event['session']['application']['applicationId'] != self.app_id):
+                valid_app_id = False
+            else:
+                valid_app_id = True
+        except:
+            valid_app_id = False
+
+        return valid_app_id
+
+    def _handle_amazon_request(self, event, context):
+        """
+        Method dynamically calls AMAZON built in requests.  For example, with the
+        new Audio Playback, there call requests of the form:
+        AudioPlayer.PlaybackStarted
+        AudioPlayer.PlaybackFinished
+        To keep this generic, this method will dynamically call method of the form:
+
+        A.B
+        on_a_b_request(event, context)
+        e.g:
+        AudioPlayer.PlaybackStarted will be a method
+        on_audioplayer_playbackstarted_request(..)
+
+        :param event:
+        :param context:
+        :return:speechlet_response, directive, None
+        """
+        self.logger.info("_handle_amazon_request: event: {0}".format(event))
+        request_type = event['request']['type']
+        self.logger.info("_handle_amazon_request: {0}".format(request_type))
+        if request_type:
+            parts = request_type.split(".")
+            if len(parts) == 1:
+                request_type_method_name = "on_{0}_request".format(parts[0].lower())
+            elif len(parts) == 2:
+                request_type_method_name = "on_{0}_{1}_request".format(parts[0].lower(), parts[1].lower())
+            else:
+                raise ValueError("Unexpected request type: {0}".format(request_type))
+            self.logger.info("_handle_amazon_request: {0}".format(request_type_method_name))
+            if hasattr(self, request_type_method_name):
+                try:
+                    return getattr(self, request_type_method_name)(event, context)
+                except:
+                    self.logger.error("ERROR: _handle_amazon_request: {0}".format(request_type_method_name))
+            else:
+                self.logger.error("_handle_amazon_request: {0} method not found".format(request_type_method_name))
+                raise ValueError("No method with name: {0} exists in class".format(request_type_method_name))
+
+    def _handle_amazon_intent(self, event, context):
+        """
+        Method dynamically calls AMAZON built in intents.
+        For example, for the AMAZON.YesIntent, this method will dynamically call
+        a method of the form:
+        on_yes_intent(intent_request, session)
+
+        This allows for this base class to be extensible to handle the new
+        Amazon Alexa Streaming Playback support without having to specially
+        look for the streaming intent names.
+        :param event:
+        :param context:
+        :return: speechlet_response
+        """
+        intent_name = self._get_intent_name(event['request'])
+        if intent_name is not None and intent_name.startswith("AMAZON."):
+            intent_method_name = "on_{0}_intent".format(intent_name.split(".")[1].replace("Intent","").lower())
+            self.logger.info("_handle_amazon_intent: {0}".format(intent_method_name))
+
+            if hasattr(self, intent_method_name):
+                return getattr(self, intent_method_name)(event['request'], event['session'])
+            else:
+                raise ValueError("No method with name: {0} exists in class".format(intent_method_name))
+        else:
+            return None
+
+
     def process_request(self, event, context):
         """
         Helper method to process the input Alexa request and
@@ -143,9 +226,15 @@ class AlexaBaseHandler(object):
         :param context:
         :return: response from the on_ handler
         """
+        try:
+            request_type = event['request']['type']
+            self.logger.info("event[request][type]: {0}".format(request_type))
+        except:
+            request_type = None
+
         # if its a new session, run the new session code
         try:
-            if(self.app_id and event['session']['application']['applicationId'] != self.app_id):
+            if not self.check_app_id(event):
                 raise ValueError("Invalid Application ID")
 
             response = None
@@ -153,28 +242,20 @@ class AlexaBaseHandler(object):
                 self.on_session_started({'requestId': event['request']['requestId']}, event['session'])
 
                 # regardless of whether its new, handle the request type
-            if event['request']['type'] == "LaunchRequest":
+            if request_type == "LaunchRequest":
                 response = self.on_launch(event['request'], event['session'])
-            elif event['request']['type'] == "IntentRequest":
+            elif request_type == "IntentRequest":
                 intent_name = self._get_intent_name(event['request'])
-                if intent_name == "AMAZON.HelpIntent":
-                    response = self.on_help_intent(event['request'],event['session'])
-                elif intent_name == "AMAZON.StopIntent":
-                    response = self.on_stop_intent(event['request'], event['session'])
-                elif intent_name == "AMAZON.CancelIntent":
-                    response = self.on_cancel_intent(event['request'], event['session'])
-                elif intent_name == "AMAZON.NoIntent":
-                    response = self.on_no_intent(event['request'], event['session'])
-                elif intent_name == "AMAZON.RepeatIntent":
-                    response = self.on_repeat_intent(event['request'], event['session'])
-                elif intent_name == "AMAZON.StartOverIntent":
-                    response = self.on_start_over_intent(event['request'], event['session'])
-                elif intent_name == "AMAZON.YesIntent":
-                    response = self.on_yes_intent(event['request'], event['session'])
+                if intent_name is not None and intent_name.startswith("AMAZON."):
+                    response = self._handle_amazon_intent(event, context)
                 else:
+                    # this is a user specific intent, so let the users concrete
+                    # implementation handle it.
                     response = self.on_intent(event['request'], event['session'])
-            elif event['request']['type'] == "SessionEndedRequest":
+            elif request_type == "SessionEndedRequest":
                 response = self.on_session_ended(event['request'], event['session'])
+            elif request_type is not None:
+                response = self._handle_amazon_request(event, context)
 
         except Exception as exc:
             self.logger.error(exc.message)

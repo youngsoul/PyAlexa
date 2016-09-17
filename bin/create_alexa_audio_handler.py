@@ -11,10 +11,10 @@ Script will create a concrete implementation of the Alexa Handler.
 """
 
 handler_file_template = """
-from pyalexaskill.AlexaBaseHandler import AlexaBaseHandler
+from pyalexaskill.AlexaAudioBaseHandler import AlexaAudioBaseHandler
 
 
-class AlexaDeploymentTestHandler(AlexaBaseHandler):
+class AlexaAudioTestHandler(AlexaAudioBaseHandler):
 
     # Sample concrete implementation of the AlexaBaseHandler to test the
     # deployment scripts and process.
@@ -133,7 +133,7 @@ class AlexaDeploymentTestHandler(AlexaBaseHandler):
         return self._build_response(session_attributes, speechlet)
 
     def on_stop_intent(self, intent_request, session):
-        return self.on_cancel_intent(intent_request, session)
+        return self.create_stop_directive()
 
     def on_cancel_intent(self, intent_request, session):
         session_attributes = {}
@@ -161,6 +161,13 @@ class AlexaDeploymentTestHandler(AlexaBaseHandler):
 
     def on_startover_intent(self, intent_request, session):
         return self._test_response("on start over intent")
+
+
+    # --------------------  Audio Playback Methods --------------
+    def on_pause_intent(self,intent_request, session):
+        return self.create_stop_directive()
+
+
 
 """
 

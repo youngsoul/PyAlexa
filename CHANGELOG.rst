@@ -119,3 +119,12 @@ Changes:
 * update create_aws_lambda.py to allow for files in directories below the root directory
 and they will be copied into a corresponding deployment directory.
 
+0.2.0 (2016-x-xx)
+------------------
+
+Changes:
+~~~~~~~~
+* added audio intent handling and generically call amazon intents now
+* BREAKING CHANGE: on_start_over_intent needs to be renamed to on_startover_intent
+* added ability to include requirements-test.txt which will install as:
+    pip install -i https://testpypi.python.org/pypi <requirements line> -t <deployment_dir>

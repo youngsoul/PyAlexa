@@ -34,8 +34,23 @@ root_project_dir = ''
 deployment_files = []
 
 
+def _read_test_requirements():
+    filename = "{0}/requirements-test.txt".format(root_project_dir)
+    if not os.path.exists(filename):
+        return None
+
+    with open(filename, 'r') as f:
+        install_requirements = f.readlines()
+
+    return install_requirements
+
+
 def _read_requirements():
-    with open("{0}/requirements.txt".format(root_project_dir), 'r') as f:
+    filename = "{0}/requirements.txt".format(root_project_dir)
+    if not os.path.exists(filename):
+        return None
+
+    with open(filename, 'r') as f:
         install_requirements = f.readlines()
 
     return install_requirements
@@ -72,6 +87,18 @@ def _make_deployment_dir():
 
     return (new_deployment_dir_path, deployment_name)
 
+def _install_test_requirements(deployment_requirements, deployment_dir):
+    """
+    pip install -i https://testpypi.python.org/pypi <requirements line> -t <deployment_dir>
+    :param deployment_requirements
+    :param deployment_dir:
+    :return:
+    """
+    if os.path.exists(deployment_dir):
+        for requirement in deployment_requirements:
+            if not requirement.startswith('#'):
+                cmd = "pip install -i https://testpypi.python.org/pypi {0} -t {1}".format(requirement, deployment_dir).split()
+                return_code = subprocess.call(cmd, shell=False)
 
 def _install_requirements(deployment_requirements, deployment_dir):
     """
@@ -93,7 +120,7 @@ def _copy_deployment_files(deployment_data):
             cmd = "cp {0} {1}".format(item['from'], item['to']).split()
             return_code = subprocess.call(cmd, shell=False)
         else:
-            raise NameError("Deployment file not found [{0}]".format(deployment_file))
+            raise NameError("Deployment file not found [{0}]".format(item['from']))
 
 
 def zipdir(dirPath=None, zipFilePath=None, includeDirInZip=False):
@@ -207,8 +234,14 @@ def main(argv):
 
     _copy_deployment_files(deployment_files)
 
+    # standard requirements file
     install_requirements = _read_requirements()
     _install_requirements(install_requirements, deployment_dir)
+
+    # test requirements file (requirements-test.txt)
+    install_requirements = _read_test_requirements()
+    _install_test_requirements(install_requirements, deployment_dir)
+
 
     deployment_num_file_name = "{0}/.deployment_number.txt".format(root_deployments_dir)
     if not os.path.isfile(deployment_num_file_name):
