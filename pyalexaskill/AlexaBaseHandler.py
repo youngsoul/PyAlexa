@@ -1,6 +1,6 @@
 import abc
 import logging
-
+import traceback
 
 class AlexaBaseHandler(object):
     """
@@ -13,9 +13,9 @@ class AlexaBaseHandler(object):
 
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, app_id=None):
+    def __init__(self, app_id=None, log_level=logging.INFO):
         self.logger = logging.getLogger()
-        self.logger.setLevel(logging.INFO)
+        self.logger.setLevel(log_level)
         self.app_id = app_id
 
     @abc.abstractmethod
@@ -135,6 +135,10 @@ class AlexaBaseHandler(object):
         """
         pass
 
+    @abc.abstractmethod
+    def on_invalid_response_request(self, event, context):
+        pass
+
     def check_app_id(self, event):
         """
         Check the App id to make sure it is valid.
@@ -187,6 +191,7 @@ class AlexaBaseHandler(object):
                 try:
                     response = getattr(self, request_type_method_name)(event, context)
                 except:
+                    self.logger.error("Traceback Exception {0}".format(traceback.format_exc()))
                     self.logger.error("ERROR: _handle_amazon_request: {0}".format(request_type_method_name))
             else:
                 self.logger.error("_handle_amazon_request: {0} method not found".format(request_type_method_name))
@@ -208,17 +213,24 @@ class AlexaBaseHandler(object):
         :param context:
         :return: speechlet_response
         """
+        response = None
+
         intent_name = self._get_intent_name(event['request'])
         if intent_name is not None and intent_name.startswith("AMAZON."):
             intent_method_name = "on_{0}_intent".format(intent_name.split(".")[1].replace("Intent","").lower())
             self.logger.info("_handle_amazon_intent: {0}".format(intent_method_name))
 
             if hasattr(self, intent_method_name):
-                return getattr(self, intent_method_name)(event['request'], event['session'])
+                try:
+                    response = getattr(self, intent_method_name)(event['request'], event['session'])
+                except:
+                    self.logger.error("Traceback Exception {0}".format(traceback.format_exc()))
+                    self.logger.error("ERROR: _handle_amazon_intent: {0}".format(intent_method_name))
+
             else:
                 raise ValueError("No method with name: {0} exists in class".format(intent_method_name))
-        else:
-            return None
+
+        return response
 
 
     def process_request(self, event, context):
@@ -229,11 +241,19 @@ class AlexaBaseHandler(object):
         :param context:
         :return: response from the on_ handler
         """
+        self.logger.debug("process_request: event: {0}".format(event))
+        self.logger.debug("process_request: context: {0}".format(context))
+
         try:
             request_type = event['request']['type']
             self.logger.info("event[request][type]: {0}".format(request_type))
         except:
             request_type = None
+
+        try:
+            new_session = event['session']['new']
+        except:
+            new_session = False
 
         # if its a new session, run the new session code
         try:
@@ -241,7 +261,7 @@ class AlexaBaseHandler(object):
                 raise ValueError("Invalid Application ID")
 
             response = None
-            if event['session']['new']:
+            if new_session is not False:
                 self.on_session_started({'requestId': event['request']['requestId']}, event['session'])
 
                 # regardless of whether its new, handle the request type
@@ -258,9 +278,11 @@ class AlexaBaseHandler(object):
             elif request_type == "SessionEndedRequest":
                 response = self.on_session_ended(event['request'], event['session'])
             elif request_type is not None:
+                self.logger.info("Calling _handle_amazon_request")
                 response = self._handle_amazon_request(event, context)
 
         except Exception as exc:
+            self.logger.error("Error in process_request: {0}".format(traceback.format_exc()))
             self.logger.error(exc.message)
             response = self.on_processing_error(event, context, exc)
 

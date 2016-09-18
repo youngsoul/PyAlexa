@@ -1,6 +1,6 @@
 from pyalexaskill.AlexaBaseHandler import AlexaBaseHandler
 import abc
-
+import logging
 
 class AlexaAudioBaseHandler(AlexaBaseHandler):
     """
@@ -41,10 +41,13 @@ def lambda_handler(event, context):
     https://developer.amazon.com/public/community/post/Tx1DSINBM8LUNHY/New-Alexa-Skills-Kit-ASK-Feature-Audio-Streaming-in-Alexa-Skills
 
 https://developer.amazon.com/public/solutions/alexa/alexa-voice-service/reference/audioplayer
+
+Your skill is not required to respond to AudioPlayer requests but if it does, please be aware that it can only respond with the AudioPlayer directives mentioned earlier (Play, Stop and ClearQueue). The response should not include any of the standard properties such as outputSpeech, just like the AudioPlayer directives.
+
     """
 
-    def __init__(self, app_id=None):
-        super(AlexaAudioBaseHandler, self).__init__(app_id)
+    def __init__(self, app_id=None, log_level=logging.INFO):
+        super(AlexaAudioBaseHandler, self).__init__(app_id, log_level)
 
     def create_clearqueue_directive(self):
         directive = {
@@ -108,7 +111,7 @@ https://developer.amazon.com/public/solutions/alexa/alexa-voice-service/referenc
         }
 
         if session_attributes is not None:
-            directive['session_attributes'] = session_attributes
+            directive['sessionAttributes'] = session_attributes
 
         if speech_content is not None:
             directive['response']['outputSpeech']['type']="PlainText"
@@ -168,27 +171,27 @@ https://developer.amazon.com/public/solutions/alexa/alexa-voice-service/referenc
 
     @abc.abstractmethod
     def on_audioplayer_playbackstarted_request(self, event, context):
-        raise ValueError("Playback started request was not implemented")
+        return None
 
 
     @abc.abstractmethod
     def on_audioplayer_playbackfinished_request(self, event, context):
-        raise ValueError("Playback finished request was not implemented")
+        return None
 
 
     @abc.abstractmethod
     def on_audioplayer_playbackstopped_request(self, event, context):
-        raise ValueError("Playback stopped request was not implemented")
+        return None
 
 
     @abc.abstractmethod
     def on_audioplayer_playbacknearlyfinished_request(self, event, context):
-        raise ValueError("Playback Nearly Finished request was not implemented")
+        return None
 
 
     @abc.abstractmethod
     def on_audioplayer_playbackfailed_request(self, event, context):
-        pass
+        return None
 
 
     @abc.abstractmethod
