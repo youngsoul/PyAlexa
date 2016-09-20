@@ -85,6 +85,20 @@ Your skill is not required to respond to AudioPlayer requests but if it does, pl
         }
         return directive
 
+    def create_empty_response(self):
+        response = {
+            "version": "1.0",
+            "sessionAttributes": {},
+            "response": {
+                "outputSpeech": {},
+                "card": {},
+                "reprompt": {},
+                "shouldEndSession": True
+            }
+        }
+        return response
+
+
     def create_play_directive(self, token, url, offset=0, speech_content=None, card_title=None, card_content=None, session_attributes=None):
         directive = {
             "version": "1.0",

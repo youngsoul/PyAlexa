@@ -139,6 +139,29 @@ class AlexaBaseHandler(object):
     def on_invalid_response_request(self, event, context):
         pass
 
+    @abc.abstractmethod
+    def on_system_exceptionencountered_request(self, event, context):
+        """
+        {
+          "type": "System.ExceptionEncountered",
+          "requestId": "string",
+          "timestamp": "string",
+          "locale": "string",
+          "error": {
+            "type": "string",
+            "message": "string"
+          },
+          "cause": {
+            "requestId": "string"
+          }
+        }
+
+        :param event:
+        :param context:
+        :return:
+        """
+        pass
+
     def check_app_id(self, event):
         """
         Check the App id to make sure it is valid.
@@ -175,9 +198,9 @@ class AlexaBaseHandler(object):
         :return:speechlet_response, directive, None
         """
         response = None
-        self.logger.info("_handle_amazon_request: event: {0}".format(event))
+        self.logger.debug("_handle_amazon_request: event: {0}".format(event))
         request_type = event['request']['type']
-        self.logger.info("_handle_amazon_request: {0}".format(request_type))
+        self.logger.debug("_handle_amazon_request: {0}".format(request_type))
         if request_type:
             parts = request_type.split(".")
             if len(parts) == 1:
@@ -186,7 +209,7 @@ class AlexaBaseHandler(object):
                 request_type_method_name = "on_{0}_{1}_request".format(parts[0].lower(), parts[1].lower())
             else:
                 raise ValueError("Unexpected request type: {0}".format(request_type))
-            self.logger.info("_handle_amazon_request: {0}".format(request_type_method_name))
+            self.logger.debug("_handle_amazon_request: {0}".format(request_type_method_name))
             if hasattr(self, request_type_method_name):
                 try:
                     response = getattr(self, request_type_method_name)(event, context)
@@ -218,7 +241,7 @@ class AlexaBaseHandler(object):
         intent_name = self._get_intent_name(event['request'])
         if intent_name is not None and intent_name.startswith("AMAZON."):
             intent_method_name = "on_{0}_intent".format(intent_name.split(".")[1].replace("Intent","").lower())
-            self.logger.info("_handle_amazon_intent: {0}".format(intent_method_name))
+            self.logger.debug("_handle_amazon_intent: {0}".format(intent_method_name))
 
             if hasattr(self, intent_method_name):
                 try:
@@ -242,11 +265,10 @@ class AlexaBaseHandler(object):
         :return: response from the on_ handler
         """
         self.logger.debug("process_request: event: {0}".format(event))
-        self.logger.debug("process_request: context: {0}".format(context))
 
         try:
             request_type = event['request']['type']
-            self.logger.info("event[request][type]: {0}".format(request_type))
+            self.logger.debug("event[request][type]: {0}".format(request_type))
         except:
             request_type = None
 
@@ -278,7 +300,7 @@ class AlexaBaseHandler(object):
             elif request_type == "SessionEndedRequest":
                 response = self.on_session_ended(event['request'], event['session'])
             elif request_type is not None:
-                self.logger.info("Calling _handle_amazon_request")
+                self.logger.debug("Calling _handle_amazon_request")
                 response = self._handle_amazon_request(event, context)
 
         except Exception as exc:
