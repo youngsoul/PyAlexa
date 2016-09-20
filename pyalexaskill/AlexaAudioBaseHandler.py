@@ -68,22 +68,19 @@ Your skill is not required to respond to AudioPlayer requests but if it does, pl
         return directive
 
     def create_stop_directive(self):
-        directive = {
-            "version": "1.0",
-            "sessionAttributes": {},
-            "response": {
-                "outputSpeech": {},
-                "card": {},
-                "reprompt": {},
-                "directives": [
-                    {
-                        "type": "AudioPlayer.Stop"
+        stop_response = {
+                    "version": "1.0",
+                    "sessionAttributes": {},
+                    "response": {
+                        "directives": [
+                            {
+                                "type": "AudioPlayer.Stop"
+                            }
+                        ],
+                        "shouldEndSession": True
                     }
-                ],
-                "shouldEndSession": True
-            }
-        }
-        return directive
+                }
+        return stop_response
 
     def create_empty_response(self):
         response = {
