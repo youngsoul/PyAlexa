@@ -95,8 +95,35 @@ Your skill is not required to respond to AudioPlayer requests but if it does, pl
         }
         return response
 
+    def create_enqueue_directive(self, token, url, session_attributes=None):
+        directive = {
+            "version": "1.0",
+            "sessionAttributes": {},
+            "response": {
+                "directives": [
+                    {
+                        "type": "AudioPlayer.Play",
+                        "playBehavior": "ENQUEUE",  #"REPLACE_ALL",  #"ENQUEUE", "REPLACE_ENQUEUED"
+                        "audioItem": {
+                            "stream": {
+                                "token": token,
+                                "expectedPreviousToken": token,
+                                "url": url,
+                                "offsetInMilliseconds": 0
+                            }
+                        }
+                    }
+                ],
+                "shouldEndSession": True
+            }
+        }
 
-    def create_play_directive(self, token, url, offset=0, speech_content=None, card_title=None, card_content=None, session_attributes=None):
+        if session_attributes is not None:
+            directive['sessionAttributes'] = session_attributes
+
+        return directive
+
+    def create_play_directive(self, token, url, behavior="REPLACE_ALL", offset=0, speech_content=None, card_title=None, card_content=None, session_attributes=None):
         directive = {
             "version": "1.0",
             "sessionAttributes": {},
@@ -107,7 +134,7 @@ Your skill is not required to respond to AudioPlayer requests but if it does, pl
                 "directives": [
                     {
                         "type": "AudioPlayer.Play",
-                        "playBehavior": "REPLACE_ALL",  #"ENQUEUE", "REPLACE_ENQUEUED"
+                        "playBehavior": behavior,  #"REPLACE_ALL",  #"ENQUEUE", "REPLACE_ENQUEUED"
                         "audioItem": {
                             "stream": {
                                 "token": token,
@@ -182,26 +209,80 @@ Your skill is not required to respond to AudioPlayer requests but if it does, pl
 
     @abc.abstractmethod
     def on_audioplayer_playbackstarted_request(self, event, context):
+        """
+        Note: When responding to AudioPlayer requests, you can only respond with AudioPlayer directives. The response cannot include any of the standard properties such as outputSpeech. In addition, some requests limit the directives you can use, such as not allowing Play. Sending a response with unsupported properties causes an error. See the request types below for the limits on each request.
+        Use context to get app id and/or user id
+            {
+              "version": "string",
+              "context": {
+                "System": {
+                  "application": {},
+                  "user": {},
+                  "device": {}
+                }
+              },
+              "request": {
+                "type": "AudioPlayer.PlaybackStarted",
+                "requestId": "string",
+                "timestamp": "string",
+                "token": "string",
+                "offsetInMilliseconds": 0,
+                "locale": "string"
+              }
+            }
+        :param event:
+        :param context:
+        :return:
+        """
         return None
 
 
     @abc.abstractmethod
     def on_audioplayer_playbackfinished_request(self, event, context):
+        """
+        Note: When responding to AudioPlayer requests, you can only respond with AudioPlayer directives. The response cannot include any of the standard properties such as outputSpeech. In addition, some requests limit the directives you can use, such as not allowing Play. Sending a response with unsupported properties causes an error. See the request types below for the limits on each request.
+        Use context to get app id and/or user id
+        :param event:
+        :param context:
+        :return:
+        """
         return None
 
 
     @abc.abstractmethod
     def on_audioplayer_playbackstopped_request(self, event, context):
+        """
+        Note: When responding to AudioPlayer requests, you can only respond with AudioPlayer directives. The response cannot include any of the standard properties such as outputSpeech. In addition, some requests limit the directives you can use, such as not allowing Play. Sending a response with unsupported properties causes an error. See the request types below for the limits on each request.
+        Your skill cannot return a response to PlaybackStopped
+        Use context to get app id and/or user id
+        :param event:
+        :param context:
+        :return:
+        """
         return None
 
 
     @abc.abstractmethod
     def on_audioplayer_playbacknearlyfinished_request(self, event, context):
+        """
+        Note: When responding to AudioPlayer requests, you can only respond with AudioPlayer directives. The response cannot include any of the standard properties such as outputSpeech. In addition, some requests limit the directives you can use, such as not allowing Play. Sending a response with unsupported properties causes an error. See the request types below for the limits on each request.
+        Use context to get app id and/or user id
+        :param event:
+        :param context:
+        :return:
+        """
         return None
 
 
     @abc.abstractmethod
     def on_audioplayer_playbackfailed_request(self, event, context):
+        """
+        Note: When responding to AudioPlayer requests, you can only respond with AudioPlayer directives. The response cannot include any of the standard properties such as outputSpeech. In addition, some requests limit the directives you can use, such as not allowing Play. Sending a response with unsupported properties causes an error. See the request types below for the limits on each request.
+        Use context to get app id and/or user id
+        :param event:
+        :param context:
+        :return:
+        """
         return None
 
 

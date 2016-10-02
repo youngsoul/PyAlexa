@@ -255,6 +255,48 @@ class AlexaBaseHandler(object):
 
         return response
 
+    def _handle_custom_intent(self, event, context):
+        """
+        Method dynamically calls customeintents by taking the intent name,
+        lower casing it, and prepending the name with on_
+
+        For example, for the MyCustomIntent, this method will dynamically call
+        a method of the form:
+        on_mycustomintent(intent_request, session)
+
+        If the class has not method with that name, it will look for a
+        method with the name, 'on_intent'.
+
+        If no method with that name exists then an error will be thrown.
+
+        :param event:
+        :param context:
+        :return: speechlet_response
+        """
+        response = None
+
+        intent_name = self._get_intent_name(event['request'])
+        if intent_name is not None:
+            intent_method_name = "on_{0}".format(intent_name.lower())
+            self.logger.debug("_handle_custom_intent: {0}".format(intent_method_name))
+
+            if hasattr(self, intent_method_name):
+                try:
+                    response = getattr(self, intent_method_name)(event['request'], event['session'])
+                except:
+                    self.logger.error("Traceback Exception {0}".format(traceback.format_exc()))
+                    self.logger.error("ERROR: _handle_amazon_intent: {0}".format(intent_method_name))
+
+            elif hasattr(self, 'on_intent'):
+                try:
+                    response = getattr(self, 'on_intent')(event['request'], event['session'])
+                except:
+                    self.logger.error("Traceback Exception {0}".format(traceback.format_exc()))
+                    self.logger.error("ERROR: _handle_custom_intent: {0}".format(intent_method_name))
+            else:
+                raise ValueError("No method with name: {0} exists in class".format(intent_method_name))
+
+        return response
 
     def process_request(self, event, context):
         """
@@ -289,6 +331,7 @@ class AlexaBaseHandler(object):
                 # regardless of whether its new, handle the request type
             if request_type == "LaunchRequest":
                 response = self.on_launch(event['request'], event['session'])
+
             elif request_type == "IntentRequest":
                 intent_name = self._get_intent_name(event['request'])
                 if intent_name is not None and intent_name.startswith("AMAZON."):
@@ -296,9 +339,11 @@ class AlexaBaseHandler(object):
                 else:
                     # this is a user specific intent, so let the users concrete
                     # implementation handle it.
-                    response = self.on_intent(event['request'], event['session'])
+                    response = self._handle_custom_intent(event, context)
+
             elif request_type == "SessionEndedRequest":
                 response = self.on_session_ended(event['request'], event['session'])
+
             elif request_type is not None:
                 self.logger.debug("Calling _handle_amazon_request")
                 response = self._handle_amazon_request(event, context)
