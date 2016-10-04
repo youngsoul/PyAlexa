@@ -95,7 +95,7 @@ Your skill is not required to respond to AudioPlayer requests but if it does, pl
         }
         return response
 
-    def create_enqueue_directive(self, token, url, session_attributes=None):
+    def create_enqueue_directive(self, current_token, token, url, session_attributes=None):
         directive = {
             "version": "1.0",
             "sessionAttributes": {},
@@ -107,7 +107,7 @@ Your skill is not required to respond to AudioPlayer requests but if it does, pl
                         "audioItem": {
                             "stream": {
                                 "token": token,
-                                "expectedPreviousToken": token,
+                                "expectedPreviousToken": current_token,
                                 "url": url,
                                 "offsetInMilliseconds": 0
                             }

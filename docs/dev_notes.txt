@@ -50,8 +50,7 @@ update setup.py
 * activate virtual env
 source ../VirtualEnvs/AlexaPython27Env/bin/activate
 python setup.py sdist
-twine upload -r test dist/pyalexa-skill-0.1.11.dev31*
 
-
+3
 -- test install in project
 pip install -i https://testpypi.python.org/pypi pyalexa-skill
