@@ -12,119 +12,130 @@ Script will create a concrete implementation of the Alexa Handler.
 
 handler_file_template = """
 from pyalexaskill.AlexaAudioBaseHandler import AlexaAudioBaseHandler
+import logging
+import random
 
 
-class AlexaAudioTestHandler(AlexaAudioBaseHandler):
-
-    # Sample concrete implementation of the AlexaBaseHandler to test the
-    # deployment scripts and process.
-    # All on_ handlers call the same test response changing the request type
-    # spoken.
+class MyAudioException(Exception):
+    pass
 
 
-    def __init__(self, app_id=None):
-        super(self.__class__, self).__init__(app_id)
+class AlexaAudioHandler(AlexaAudioBaseHandler):
 
-
-    def _test_response(self, msg):
+    def _build_audio_response(self, speech, title, card):
         session_attributes = {}
-        card_title = "Test Response"
-        card_output = "Test card output"
-        speech_output = "Welcome to the Python Alexa Test Deployment for request type {0}.  It seems to have worked".format(
-            msg)
+        card_title = title
+        card_output = card
+        speech_output = speech
         # If the user either does not reply to the welcome message or says something
         # that is not understood, they will be prompted again with this text.
         reprompt_text = "Reprompt text for the Alexa Test Deployment"
         should_end_session = True
 
-        speechlet = self._build_speechlet_response(card_title, card_output, speech_output, reprompt_text,
-                                                   should_end_session)
+        speechlet = self._build_speechlet_response(card_title, card_output, speech_output, reprompt_text, should_end_session)
 
         return self._build_response(session_attributes, speechlet)
 
+    def __init__(self, app_id=None, log_level=logging.INFO):
+
+        self.songs = []
+        self.songs.append({
+            'name': '',
+            'url': '',
+            'token': ''
+        })
+        self.songs.append({
+            'name': '',
+            'url': '',
+            'token': ''
+        })
+        # add additional song data here
+
+        super(AlexaAudioHandler, self).__init__(app_id, log_level)
+
+    def on_system_exceptionencountered_request(self, event, context):
+        try:
+            self.logger.error("ERROR: on_system_exceptionencountered_request: {0}".format(event))
+            self.logger.error("ERROR: Type: {0}".format(event['error']['type']))
+            self.logger.error("ERROR: Msg: {0}".format(event['error']['message']))
+        except:
+            pass
+
+        return None
+
+    def on_invalid_response_request(self, event, context):
+        self.logger.error("on_invalid_response_request: {0}".format(event))
+        return self.create_empty_response()
+
+    def on_startover_intent(self, intent_request, session):
+        return self._play_song()
+
+    def on_stop_intent(self, intent_request, session):
+        self.logger.debug("AlexaAudioHandler.on_stop_intent")
+        return self.create_stop_directive()
+
+    def check_app_id(self, event):
+        return super(AlexaAudioHandler, self).check_app_id(event)
+
+    def on_session_started(self, session_started_request, session):
+        super(AlexaAudioHandler, self).on_session_started(session_started_request, session)
+
+    def on_intent(self, intent_request, session):
+        super(AlexaAudioHandler, self).on_intent(intent_request, session)
+
+    def on_yes_intent(self, intent_request, session):
+        return super(AlexaAudioHandler, self).on_yes_intent(intent_request, session)
+
+    def on_no_intent(self, intent_request, session):
+        return super(AlexaAudioHandler, self).on_no_intent(intent_request, session)
 
     def on_processing_error(self, event, context, exc):
-        session_attributes = {}
-        speech_output = "I am having difficulty fulfilling your request."
+        super(AlexaAudioHandler, self).on_processing_error(event, context, exc)
 
-        reprompt_text = "I did not hear you"
-        should_end_session = True
-
-        if exc:
-            speech_output = "I am having difficulty fulfilling your request. {0}".format(exc.message)
-
-        card_output = speech_output
-        speechlet = self._build_speechlet_response(self.card_title,
-                                                   card_output,
-                                                   speech_output,
-                                                   reprompt_text,
-                                                   should_end_session)
-
-        return self._build_response(session_attributes, speechlet)
+    def on_session_ended(self, session_end_request, session):
+        super(AlexaAudioHandler, self).on_session_ended(session_end_request, session)
 
 
     def on_launch(self, launch_request, session):
-        session_attributes = {}
-        card_output = "Sample Card Output"
-        speech_output = "Sample Speech Output"
+        self.logger.info("Executing on_launch")
+        return self._play_song()
 
-        reprompt_text = "I did not hear you"
-        should_end_session = False
-        speechlet = self._build_speechlet_response(self.card_title,
-                                                   card_output,
-                                                   speech_output,
-                                                   reprompt_text,
-                                                   should_end_session)
+    def _enqueue_song(self, current_token):
+        song = random.choice(self.songs)
+        url = song['url']
+        token = song['token']
+        self.logger.info("_enqueue_song: {0}".format(song['name']))
+        enqueue_response = self.create_enqueue_directive(current_token, token, url)
+        self.logger.debug("Enqueue Response: {0}".format(enqueue_response))
+        return enqueue_response
 
-        return self._build_response(session_attributes, speechlet)
-
-
-    def on_session_started(self, session_started_request, session):
-        return self._test_response("on session started")
-
-
-    def on_intent(self, intent_request, session):
-        response = None
-        session_attributes = {}
-        reprompt_text = "I did not hear you sample"
-        should_end_session = True
-        card_output = "Sample Card Output"
-        speech_output = "Sample Speech Output"
-
-        intent_name = self._get_intent_name(intent_request)
-        if intent_name == "Your First Intent":
-            speechlet = self._build_speechlet_response(self.card_title,
-                                                       card_output,
-                                                       speech_output,
-                                                       reprompt_text,
-                                                       should_end_session)
-
-            response = self._build_response(session_attributes, speechlet)
-
-        elif intent_name == "Your Second Intent":
-            speechlet = self._build_speechlet_response(self.card_title,
-                                                       card_output,
-                                                       speech_output,
-                                                       reprompt_text,
-                                                       should_end_session)
-
-            response = self._build_response(session_attributes, speechlet)
+    def _play_song(self, silent=False):
+        song = random.choice(self.songs)
+        url = song['url']
+        token = song['token']
+        if silent:
+            speech = ""
         else:
-            raise ValueError("Invalid intent")
+            speech = "Playing {0}".format(song['name'])
+        card = "Playing {0}".format(song['name'])
+        self.logger.info("_play_song: {0}".format(song['name']))
+        session_attributes = {
+            'song': song
+        }
 
-        return response
-
-    def on_session_ended(self, session_end_request, session):
-        return self._test_response("on session end")
+        play_response = self.create_play_directive(token, url, "REPLACE_ALL", 0, speech, "BwB", card, session_attributes)
+        self.logger.info("Play Response: {0}".format(play_response))
+        return play_response
 
     def on_help_intent(self, intent_request, session):
         session_attributes = {}
-        card_output = "Card Help"
-        speech_output = "Speech Help"
+        card_output = "You can hear the sounds of Band Name by saying, play some band music"
+        speech_output = card_output
+        card_title = "Your Card Title"
 
         reprompt_text = "I did not hear you, {0}".format(speech_output)
         should_end_session = False
-        speechlet = self._build_speechlet_response(self.card_title,
+        speechlet = self._build_speechlet_response(card_title,
                                                    card_output,
                                                    speech_output,
                                                    reprompt_text,
@@ -132,42 +143,96 @@ class AlexaAudioTestHandler(AlexaAudioBaseHandler):
 
         return self._build_response(session_attributes, speechlet)
 
-    def on_stop_intent(self, intent_request, session):
-        return self.create_stop_directive()
+    def on_next_intent(self, intent_request, session):
+        return self._play_song()
+
+    def on_audioplayer_playbackfailed_request(self, event, context):
+        self.logger.debug("Executing on_audioplayer_playbackfailed_request")
+        self.logger.debug(event)
+
+        super(AlexaAudioHandler, self).on_audioplayer_playbackfailed_request(event, context)
+
+    def on_resume_intent(self, intent_request, session):
+        self.logger.debug("Executing on_resume_intent")
+        try:
+            self.logger.debug(intent_request)
+            self.logger.debug(session)
+            return self._play_song(silent=True)
+        except:
+            raise MyAudioException("An error occurred trying to resume audio")
+
+
+    def on_previous_intent(self, intent_request, session):
+        return self._play_song(silent=True)
+
+    def on_shuffleoff_intent(self, intent_request, session):
+        return self._build_audio_response("Shuffle off is not yet supported", "BwB", 'Shuffle off is not yet supported')
+
+    def on_playbackcontroller_playcommandissued_request(self, event, context):
+        super(AlexaAudioHandler, self).on_playbackcontroller_playcommandissued_request(event, context)
+
+    def on_shuffleon_intent(self, intent_request, session):
+        return self._build_audio_response("Shuffle on is not yet supported", "BwB", 'Shuffle on is not yet supported')
+
+    def on_audioplayer_playbackstarted_request(self, event, context):
+        self.logger.debug("Executing on_audioplayer_playbackstarted_request")
+        return None
+
+    def on_playbackcontroller_previouscommandissued_request(self, event, context):
+        return super(AlexaAudioHandler, self).on_playbackcontroller_previouscommandissued_request(event, context)
+
+    def on_playbackcontroller_nextcommandissued_request(self, event, context):
+        return super(AlexaAudioHandler, self).on_playbackcontroller_nextcommandissued_request(event, context)
+
+    def on_loopoff_intent(self, intent_request, session):
+        return self._build_audio_response("Loop off is not yet supported", "BwB", 'Loop off is not yet supported')
+
+    def on_playbackcontroller_pausecommandissued_request(self, event, context):
+        self.logger.debug("Executing on_playbackcontroller_pausecommandissued_request")
+        try:
+            self.logger.info(event)
+        except:
+            pass
+
+        return None
+
+    def on_audioplayer_playbackstopped_request(self, event, context):
+        self.logger.debug("Executing on_audioplayer_playbackstopped_request")
+        self.logger.debug("Executing on_audioplayer_playbackstopped_request: event: {0}".format(event))
+
+        return None
+
+    def on_pause_intent(self, intent_request, session):
+        self.logger.debug("Executing on_pause_intent")
+        self.logger.debug("AlexaAudioHandler.on_pause_intent: intent_request: {0}".format(intent_request))
+        self.logger.debug("AlexaAudioHandler.on_pause_intent: session: {0}".format(session))
+
+        response = self.create_stop_directive()
+        self.logger.debug("on_pause_intent response: {0}".format(response))
+        return response
+
+    def on_audioplayer_playbacknearlyfinished_request(self, event, context):
+        self.logger.debug("Executing on_audioplayer_playbacknearlyfinished_request")
+        current_token = event['request']['token']
+        return self._enqueue_song(current_token)
+
+    def on_loopon_intent(self, intent_request, session):
+        return self._build_audio_response("Loop on is not yet supported", "BwB", 'Loop on is not yet supported')
+
+    def on_audioplayer_playbackfinished_request(self, event, context):
+        self.logger.debug("Executing on_audioplayer_playbackfinished_request")
+        return None
 
     def on_cancel_intent(self, intent_request, session):
-        session_attributes = {}
-        card_output = "Thank you and Good-bye"
-        speech_output = "Thank you and Good-bye"
-
-        reprompt_text = "{0}".format(speech_output)
-        should_end_session = True
-        speechlet = self._build_speechlet_response(self.card_title,
-                                                   card_output,
-                                                   speech_output,
-                                                   reprompt_text,
-                                                   should_end_session)
-
-        return self._build_response(session_attributes, speechlet)
-
-    def on_no_intent(self, intent_request, session):
-        return self._test_response("on no intent")
-
-    def on_yes_intent(self, intent_request, session):
-        return self._test_response("on yes intent")
-
-    def on_repeat_intent(self, intent_request, session):
-        return self._test_response("on repeat intent")
-
-    def on_startover_intent(self, intent_request, session):
-        return self._test_response("on start over intent")
-
-
-    # --------------------  Audio Playback Methods --------------
-    def on_pause_intent(self,intent_request, session):
+        self.logger.debug("Executing on_cancel_intent")
         return self.create_stop_directive()
 
+    def on_repeat_intent(self, intent_request, session):
+        return self._play_song()
 
+    def on_playbaconintent(self, intent_request, session):
+        self.logger.debug("Executing on_playbacon_intent")
+        return self._play_song()
 
 """
 

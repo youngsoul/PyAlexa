@@ -124,9 +124,10 @@ and they will be copied into a corresponding deployment directory.
 
 Changes:
 ~~~~~~~~
-* added audio intent handling and generically call amazon intents and requests now
+* added audio intent handling and generically call amazon intents, custom intents and audio requests
 * BREAKING CHANGE: on_start_over_intent needs to be renamed to on_startover_intent
 * added ability to include requirements-test.txt which will install as:
     pip install -i https://testpypi.python.org/pypi <requirements line> -t <deployment_dir>
 * added log level specification to ctor
 * added on_invalid_response_request abstract method
+* added create_alexa_audio_handler.py to create a starter template for audio applications

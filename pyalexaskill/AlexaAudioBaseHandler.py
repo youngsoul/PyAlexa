@@ -4,8 +4,6 @@ import logging
 
 class AlexaAudioBaseHandler(AlexaBaseHandler):
     """
-    https://dl.dropboxusercontent.com/u/48134834/BaconBits/climb%20to%20safety.mp3
-
     Base class for a python Alexa Audio Skill Set.  Concrete implementations
     are expected to implement the abstract methods.
 
@@ -18,31 +16,11 @@ class AlexaAudioBaseHandler(AlexaBaseHandler):
 
     http://stackoverflow.com/questions/39157599/simplest-example-for-streaming-audio-with-alexa/39283692#39283692
 
-def lambda_handler(event, context):
-    return {
-        "response": {
-            "directives": [
-                {
-                    "type": "AudioPlayer.Play",
-                    "playBehavior": "REPLACE_ALL",
-                    "audioItem": {
-                        "stream": {
-                            "token": "12345",
-                            "url": "https://emit-media-production.s3.amazonaws.com/pbs/the-afterglow/2016/08/24/1700/201608241700_the-afterglow_64.m4a",
-                            "offsetInMilliseconds": 0
-                        }
-                    }
-                }
-            ],
-            "shouldEndSession": True
-        }
-    }
-
     https://developer.amazon.com/public/community/post/Tx1DSINBM8LUNHY/New-Alexa-Skills-Kit-ASK-Feature-Audio-Streaming-in-Alexa-Skills
 
-https://developer.amazon.com/public/solutions/alexa/alexa-voice-service/reference/audioplayer
+    https://developer.amazon.com/public/solutions/alexa/alexa-voice-service/reference/audioplayer
 
-Your skill is not required to respond to AudioPlayer requests but if it does, please be aware that it can only respond with the AudioPlayer directives mentioned earlier (Play, Stop and ClearQueue). The response should not include any of the standard properties such as outputSpeech, just like the AudioPlayer directives.
+    Your skill is not required to respond to AudioPlayer requests but if it does, please be aware that it can only respond with the AudioPlayer directives mentioned earlier (Play, Stop and ClearQueue). The response should not include any of the standard properties such as outputSpeech, just like the AudioPlayer directives.
 
     """
 
