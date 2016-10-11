@@ -119,7 +119,7 @@ Changes:
 * update create_aws_lambda.py to allow for files in directories below the root directory
 and they will be copied into a corresponding deployment directory.
 
-0.2.0 (2016-x-xx)
+0.2.0 (2016-10-10)
 ------------------
 
 Changes:

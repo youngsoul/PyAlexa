@@ -99,6 +99,7 @@ class AlexaBaseHandler(object):
                 except:
                     self.logger.error("Traceback Exception {0}".format(traceback.format_exc()))
                     self.logger.error("ERROR: _handle_amazon_request: {0}".format(request_type_method_name))
+                    raise
             else:
                 # not every request is required to be implemented - particularly for the
                 # playbackcontroller requests
@@ -134,6 +135,7 @@ class AlexaBaseHandler(object):
                 except:
                     self.logger.error("Traceback Exception {0}".format(traceback.format_exc()))
                     self.logger.error("ERROR: _handle_amazon_intent: {0}".format(intent_method_name))
+                    raise
 
             else:
                 raise NotImplementedError("No method with name: {0} exists in class".format(intent_method_name))
@@ -171,6 +173,7 @@ class AlexaBaseHandler(object):
                 except:
                     self.logger.error("Traceback Exception {0}".format(traceback.format_exc()))
                     self.logger.error("ERROR: _handle_amazon_intent: {0}".format(intent_method_name))
+                    raise
 
             elif hasattr(self, 'on_intent'):
                 try:
@@ -178,6 +181,7 @@ class AlexaBaseHandler(object):
                 except:
                     self.logger.error("Traceback Exception {0}".format(traceback.format_exc()))
                     self.logger.error("ERROR: _handle_custom_intent: {0}".format(intent_method_name))
+                    raise
             else:
                 raise NotImplementedError("No method with name: {0} exists in class".format(intent_method_name))
 
