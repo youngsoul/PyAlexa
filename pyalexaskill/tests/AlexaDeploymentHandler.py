@@ -1,4 +1,4 @@
-from ..pylexa import AlexaBaseHandler
+from ..pyalexaskill import AlexaBaseHandler
 
 
 class AlexaDeploymentHandler(AlexaBaseHandler):

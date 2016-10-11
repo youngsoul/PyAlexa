@@ -22,8 +22,8 @@ class AlexaDeploymentTestHandler(AlexaBaseHandler):
     # spoken.
 
 
-    def __init__(self):
-        super(self.__class__, self).__init__()
+    def __init__(self, app_id=None):
+        super(self.__class__, self).__init__(app_id)
 
 
     def _test_response(self, msg):
@@ -159,7 +159,7 @@ class AlexaDeploymentTestHandler(AlexaBaseHandler):
     def on_repeat_intent(self, intent_request, session):
         return self._test_response("on repeat intent")
 
-    def on_start_over_intent(self, intent_request, session):
+    def on_startover_intent(self, intent_request, session):
         return self._test_response("on start over intent")
 
 """
