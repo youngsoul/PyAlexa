@@ -27,6 +27,23 @@ process_request
 This method will take the 2 parameters that are sent to the lambda function
 and determine which of the Alexa handlers to invoke.
 
+For the Amazon Built-in requests such as AMAZON.YesIntent, process request will
+call a method of the form:  on_<intentname>_intent, e.g. on_yes_intent().  It is expected
+that the concrete implementation will have a the necessary methods to support the
+built-in intents.
+
+For custom intents, such as, MyCustomIntent, process request will
+call a method of the form:  on_<intentname>_intent, e.g. on_mycustomintent_intent().
+In this case, no assumption is made about the custom intent name, so the entire
+name is lower cased, then used in the creation of the dynamic method call.
+
+For Amazon Built-in requests such as AudioPlayer.PlaybackStarted, process request will
+call a method of the form:  on_<major name>_<minor name>_request, e.g.
+on_audioplayer_playbackstarted_request().
+
+If any of the dynamically called methods is not found, a NotImplementedError exception
+is raised.
+
 _build_speechlet_response
 -------------------------
 This method ( from the Alexa color example ) will put together the speechlet portion

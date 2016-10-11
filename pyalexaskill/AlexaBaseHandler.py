@@ -2,6 +2,7 @@ import abc
 import logging
 import traceback
 
+
 class AlexaBaseHandler(object):
     """
     Base class for a python Alexa Skill Set.  Concrete implementations
@@ -19,111 +20,6 @@ class AlexaBaseHandler(object):
         self.app_id = app_id
 
     @abc.abstractmethod
-    def on_launch(self, launch_request, session):
-        """
-        Implement the LaunchRequest.  Called when the user issues a:
-        Alexa, open <invocation name>
-        :param launch_request:
-        :param session:
-        :return: the output of _build_response
-        """
-        pass
-
-    @abc.abstractmethod
-    def on_session_started(self, session_started_request, session):
-        pass
-
-    @abc.abstractmethod
-    def on_intent(self, intent_request, session):
-        """
-        Implement the IntentRequest
-        :param intent_request:
-        :param session:
-        :return: the output of _build_response
-        """
-        pass
-
-    @abc.abstractmethod
-    def on_help_intent(self, intent_request, session):
-        """
-        Implement the built in help intent.
-        :param intent_request:
-        :param session:
-        :return:
-        """
-        raise ValueError("Help Intent was not implemented")
-
-    @abc.abstractmethod
-    def on_stop_intent(self, intent_request, session):
-        """
-        Implement the built in stop intent.
-        :param intent_request:
-        :param session:
-        :return:
-        """
-        raise ValueError("Stop Intent was not implemented")
-
-    @abc.abstractmethod
-    def on_cancel_intent(self, intent_request, session):
-        """
-        Implement the built in cancel intent.
-        :param intent_request:
-        :param session:
-        :return:
-        """
-        raise ValueError("Cancel Intent was not implemented")
-
-    @abc.abstractmethod
-    def on_no_intent(self, intent_request, session):
-        """
-        Implement the built in no (or negative) intent.
-        :param intent_request:
-        :param session:
-        :return:
-        """
-        raise ValueError("Answer No Intent was not implemented")
-
-    @abc.abstractmethod
-    def on_yes_intent(self, intent_request, session):
-        """
-        Implement the built in yes (or positive) intent.
-        :param intent_request:
-        :param session:
-        :return:
-        """
-        raise ValueError("Answer Yes Intent was not implemented")
-
-    @abc.abstractmethod
-    def on_repeat_intent(self, intent_request, session):
-        """
-        Implement the built in repeat intent.
-        :param intent_request:
-        :param session:
-        :return:
-        """
-        raise ValueError("Answer Repeat Intent was not implemented")
-
-    @abc.abstractmethod
-    def on_startover_intent(self, intent_request, session):
-        """
-        Implement the built in start over intent.
-        :param intent_request:
-        :param session:
-        :return:
-        """
-        raise ValueError("Start Over Intent was not implemented")
-
-    @abc.abstractmethod
-    def on_session_ended(self, session_end_request, session):
-        """
-        Implement the SessionEndRequest
-        :param session_end_request:
-        :param session:
-        :return: the output of _build_response
-        """
-        pass
-
-    @abc.abstractmethod
     def on_processing_error(self, event, context, exc):
         """
         If an unexpected error occurs during the process_request method
@@ -135,32 +31,18 @@ class AlexaBaseHandler(object):
         """
         pass
 
-    @abc.abstractmethod
-    def on_invalid_response_request(self, event, context):
-        pass
-
-    @abc.abstractmethod
-    def on_system_exceptionencountered_request(self, event, context):
+    def on_intent(self, intent_request, session):
         """
-        {
-          "type": "System.ExceptionEncountered",
-          "requestId": "string",
-          "timestamp": "string",
-          "locale": "string",
-          "error": {
-            "type": "string",
-            "message": "string"
-          },
-          "cause": {
-            "requestId": "string"
-          }
-        }
-
-        :param event:
-        :param context:
-        :return:
+        Implement the IntentRequest.  This is called if there is no specific
+        on_<intentname>_intent method.  This gives the implementer the choice
+        or writing specific on_intent methods, or calling a single method to
+        determine what needs to be called.
+        :param intent_request:
+        :param session:
+        :return: the output of _build_response
         """
         pass
+
 
     def check_app_id(self, event):
         """
@@ -170,7 +52,7 @@ class AlexaBaseHandler(object):
         """
         valid_app_id = False
         try:
-            if (self.app_id and event['session']['application']['applicationId'] != self.app_id):
+            if self.app_id and event['session']['application']['applicationId'] != self.app_id:
                 valid_app_id = False
             else:
                 valid_app_id = True
@@ -188,10 +70,10 @@ class AlexaBaseHandler(object):
         To keep this generic, this method will dynamically call method of the form:
 
         A.B
-        on_a_b_request(event, context)
+        on_a_b(event, context)
         e.g:
         AudioPlayer.PlaybackStarted will be a method
-        on_audioplayer_playbackstarted_request(..)
+        on_audioplayer_playbackstarted(..)
 
         :param event:
         :param context:
@@ -204,11 +86,12 @@ class AlexaBaseHandler(object):
         if request_type:
             parts = request_type.split(".")
             if len(parts) == 1:
-                request_type_method_name = "on_{0}_request".format(parts[0].lower())
+                request_type_method_name = "on_{0}".format(parts[0].lower())
             elif len(parts) == 2:
-                request_type_method_name = "on_{0}_{1}_request".format(parts[0].lower(), parts[1].lower())
+                request_type_method_name = "on_{0}_{1}".format(parts[0].lower(), parts[1].lower())
             else:
-                raise ValueError("Unexpected request type: {0}".format(request_type))
+                raise NotImplementedError("Unexpected request type: {0}".format(request_type))
+
             self.logger.debug("_handle_amazon_request: {0}".format(request_type_method_name))
             if hasattr(self, request_type_method_name):
                 try:
@@ -217,8 +100,10 @@ class AlexaBaseHandler(object):
                     self.logger.error("Traceback Exception {0}".format(traceback.format_exc()))
                     self.logger.error("ERROR: _handle_amazon_request: {0}".format(request_type_method_name))
             else:
-                self.logger.error("_handle_amazon_request: {0} method not found".format(request_type_method_name))
-                raise ValueError("No method with name: {0} exists in class".format(request_type_method_name))
+                # not every request is required to be implemented - particularly for the
+                # playbackcontroller requests
+                self.logger.warn("_handle_amazon_request: {0} method not found".format(request_type_method_name))
+                #raise NotImplementedError("No method with name: {0} exists in class".format(request_type_method_name))
 
         return response
 
@@ -251,7 +136,7 @@ class AlexaBaseHandler(object):
                     self.logger.error("ERROR: _handle_amazon_intent: {0}".format(intent_method_name))
 
             else:
-                raise ValueError("No method with name: {0} exists in class".format(intent_method_name))
+                raise NotImplementedError("No method with name: {0} exists in class".format(intent_method_name))
 
         return response
 
@@ -277,7 +162,7 @@ class AlexaBaseHandler(object):
 
         intent_name = self._get_intent_name(event['request'])
         if intent_name is not None:
-            intent_method_name = "on_{0}".format(intent_name.lower())
+            intent_method_name = "on_{0}_intent".format(intent_name.lower())
             self.logger.debug("_handle_custom_intent: {0}".format(intent_method_name))
 
             if hasattr(self, intent_method_name):
@@ -294,10 +179,13 @@ class AlexaBaseHandler(object):
                     self.logger.error("Traceback Exception {0}".format(traceback.format_exc()))
                     self.logger.error("ERROR: _handle_custom_intent: {0}".format(intent_method_name))
             else:
-                raise ValueError("No method with name: {0} exists in class".format(intent_method_name))
+                raise NotImplementedError("No method with name: {0} exists in class".format(intent_method_name))
 
         return response
 
+    #--------------------------------------------------------
+    #--------------- Main Processing Entry Point  -----------
+    #--------------------------------------------------------
     def process_request(self, event, context):
         """
         Helper method to process the input Alexa request and
@@ -322,17 +210,17 @@ class AlexaBaseHandler(object):
         # if its a new session, run the new session code
         try:
             if not self.check_app_id(event):
-                raise ValueError("Invalid Application ID")
+                raise NotImplementedError("Invalid Application ID")
 
             response = None
-            if new_session is not False:
-                self.on_session_started({'requestId': event['request']['requestId']}, event['session'])
+            if new_session is not False and hasattr(self, 'on_session_started'):
+                # then it is a new session, and the concrete class has an on_session_started
+                # callback
+                getattr(self, 'on_session_started')(event['request'], event['session'])
 
-                # regardless of whether its new, handle the request type
-            if request_type == "LaunchRequest":
-                response = self.on_launch(event['request'], event['session'])
-
-            elif request_type == "IntentRequest":
+            # regardless of whether its new, handle the request type
+            if request_type == "IntentRequest":
+                # Only handle IntentRequest here... all others in the else block
                 intent_name = self._get_intent_name(event['request'])
                 if intent_name is not None and intent_name.startswith("AMAZON."):
                     response = self._handle_amazon_intent(event, context)
@@ -340,11 +228,9 @@ class AlexaBaseHandler(object):
                     # this is a user specific intent, so let the users concrete
                     # implementation handle it.
                     response = self._handle_custom_intent(event, context)
-
-            elif request_type == "SessionEndedRequest":
-                response = self.on_session_ended(event['request'], event['session'])
-
-            elif request_type is not None:
+            else:
+                # LaunchRequest, SessionEndedRequest, AudioPlayer requests, etc
+                # are handled here.
                 self.logger.debug("Calling _handle_amazon_request")
                 response = self._handle_amazon_request(event, context)
 

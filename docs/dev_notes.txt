@@ -46,11 +46,12 @@ python setup.py sdist
 twine upload dist/pyalexa-skill-0.1.9*
 
 -- to upload a TEST version of the module
-update setup.py
+* update setup.py
 * activate virtual env
 source ../VirtualEnvs/AlexaPython27Env/bin/activate
 python setup.py sdist
+twine upload -r test dist/pyalexa-skill-0.1.11.dev40*
 
-3
+
 -- test install in project
 pip install -i https://testpypi.python.org/pypi pyalexa-skill

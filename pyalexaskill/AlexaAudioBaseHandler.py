@@ -1,6 +1,6 @@
 from pyalexaskill.AlexaBaseHandler import AlexaBaseHandler
-import abc
 import logging
+
 
 class AlexaAudioBaseHandler(AlexaBaseHandler):
     """
@@ -20,7 +20,10 @@ class AlexaAudioBaseHandler(AlexaBaseHandler):
 
     https://developer.amazon.com/public/solutions/alexa/alexa-voice-service/reference/audioplayer
 
-    Your skill is not required to respond to AudioPlayer requests but if it does, please be aware that it can only respond with the AudioPlayer directives mentioned earlier (Play, Stop and ClearQueue). The response should not include any of the standard properties such as outputSpeech, just like the AudioPlayer directives.
+    Your skill is not required to respond to AudioPlayer requests but if it does, 
+    please be aware that it can only respond with the AudioPlayer directives mentioned 
+    earlier (Play, Stop and ClearQueue). The response should not include any of the 
+    standard properties such as outputSpeech, just like the AudioPlayer directives.
 
     """
 
@@ -32,9 +35,6 @@ class AlexaAudioBaseHandler(AlexaBaseHandler):
             "version": "1.0",
             "sessionAttributes": {},
             "response": {
-                "outputSpeech": {},
-                "card": {},
-                "reprompt": {},
                 "directives": [
                     {
                         "type": "AudioPlayer.ClearQueue"
@@ -140,145 +140,3 @@ class AlexaAudioBaseHandler(AlexaBaseHandler):
 
         return directive
 
-    @abc.abstractmethod
-    def on_pause_intent(self,intent_request, session):
-        raise ValueError("Pause Intent was not implemented")
-
-    @abc.abstractmethod
-    def on_resume_intent(self, intent_request, session):
-        raise ValueError("Resume Intent was not implemented")
-
-    @abc.abstractmethod
-    def on_cancel_intent(self, intent_request, session):
-        raise ValueError("Cancel Intent was not implemented")
-
-    @abc.abstractmethod
-    def on_loopoff_intent(self, intent_request, session):
-        raise ValueError("Loop off Intent was not implemented")
-
-    @abc.abstractmethod
-    def on_loopon_intent(self, intent_request, session):
-        raise ValueError("Loop on Intent was not implemented")
-
-
-    @abc.abstractmethod
-    def on_next_intent(self, intent_request, session):
-        raise ValueError("Next Intent was not implemented")
-
-
-    @abc.abstractmethod
-    def on_previous_intent(self, intent_request, session):
-        raise ValueError("Previous Intent was not implemented")
-
-
-    @abc.abstractmethod
-    def on_repeat_intent(self, intent_request, session):
-        raise ValueError("Repeat Intent was not implemented")
-
-
-    @abc.abstractmethod
-    def on_shuffleoff_intent(self, intent_request, session):
-        raise ValueError("Shuffle Off Intent was not implemented")
-
-
-    @abc.abstractmethod
-    def on_shuffleon_intent(self, intent_request, session):
-        raise ValueError("Shuffle on intent was not implemented")
-
-    @abc.abstractmethod
-    def on_audioplayer_playbackstarted_request(self, event, context):
-        """
-        Note: When responding to AudioPlayer requests, you can only respond with AudioPlayer directives. The response cannot include any of the standard properties such as outputSpeech. In addition, some requests limit the directives you can use, such as not allowing Play. Sending a response with unsupported properties causes an error. See the request types below for the limits on each request.
-        Use context to get app id and/or user id
-            {
-              "version": "string",
-              "context": {
-                "System": {
-                  "application": {},
-                  "user": {},
-                  "device": {}
-                }
-              },
-              "request": {
-                "type": "AudioPlayer.PlaybackStarted",
-                "requestId": "string",
-                "timestamp": "string",
-                "token": "string",
-                "offsetInMilliseconds": 0,
-                "locale": "string"
-              }
-            }
-        :param event:
-        :param context:
-        :return:
-        """
-        return None
-
-
-    @abc.abstractmethod
-    def on_audioplayer_playbackfinished_request(self, event, context):
-        """
-        Note: When responding to AudioPlayer requests, you can only respond with AudioPlayer directives. The response cannot include any of the standard properties such as outputSpeech. In addition, some requests limit the directives you can use, such as not allowing Play. Sending a response with unsupported properties causes an error. See the request types below for the limits on each request.
-        Use context to get app id and/or user id
-        :param event:
-        :param context:
-        :return:
-        """
-        return None
-
-
-    @abc.abstractmethod
-    def on_audioplayer_playbackstopped_request(self, event, context):
-        """
-        Note: When responding to AudioPlayer requests, you can only respond with AudioPlayer directives. The response cannot include any of the standard properties such as outputSpeech. In addition, some requests limit the directives you can use, such as not allowing Play. Sending a response with unsupported properties causes an error. See the request types below for the limits on each request.
-        Your skill cannot return a response to PlaybackStopped
-        Use context to get app id and/or user id
-        :param event:
-        :param context:
-        :return:
-        """
-        return None
-
-
-    @abc.abstractmethod
-    def on_audioplayer_playbacknearlyfinished_request(self, event, context):
-        """
-        Note: When responding to AudioPlayer requests, you can only respond with AudioPlayer directives. The response cannot include any of the standard properties such as outputSpeech. In addition, some requests limit the directives you can use, such as not allowing Play. Sending a response with unsupported properties causes an error. See the request types below for the limits on each request.
-        Use context to get app id and/or user id
-        :param event:
-        :param context:
-        :return:
-        """
-        return None
-
-
-    @abc.abstractmethod
-    def on_audioplayer_playbackfailed_request(self, event, context):
-        """
-        Note: When responding to AudioPlayer requests, you can only respond with AudioPlayer directives. The response cannot include any of the standard properties such as outputSpeech. In addition, some requests limit the directives you can use, such as not allowing Play. Sending a response with unsupported properties causes an error. See the request types below for the limits on each request.
-        Use context to get app id and/or user id
-        :param event:
-        :param context:
-        :return:
-        """
-        return None
-
-
-    @abc.abstractmethod
-    def on_playbackcontroller_nextcommandissued_request(self, event, context):
-        pass
-
-
-    @abc.abstractmethod
-    def on_playbackcontroller_pausecommandissued_request(self, event, context):
-        pass
-
-
-    @abc.abstractmethod
-    def on_playbackcontroller_playcommandissued_request(self, event, context):
-        pass
-
-
-    @abc.abstractmethod
-    def on_playbackcontroller_previouscommandissued_request(self, event, context):
-        pass

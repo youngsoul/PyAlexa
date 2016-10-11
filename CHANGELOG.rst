@@ -126,8 +126,11 @@ Changes:
 ~~~~~~~~
 * added audio intent handling and generically call amazon intents, custom intents and audio requests
 * BREAKING CHANGE: on_start_over_intent needs to be renamed to on_startover_intent
-* added ability to include requirements-test.txt which will install as:
+* BREAKING CHANGE: on_launch needs to be renamed to on_launchrequest and are passed event, context
+* BREAKING CHANGE: on_session_ended needs to be renamed to on_sessionendedrequest and are passed event, context
+* added ability to include requirements-test.txt which create_aws_lambda.py will install as:
     pip install -i https://testpypi.python.org/pypi <requirements line> -t <deployment_dir>
+   to allow for test packages to be added to a Lambda function zip file.
 * added log level specification to ctor
 * added on_invalid_response_request abstract method
 * added create_alexa_audio_handler.py to create a starter template for audio applications

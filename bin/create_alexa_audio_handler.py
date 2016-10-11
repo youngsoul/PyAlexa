@@ -20,7 +20,7 @@ class MyAudioException(Exception):
     pass
 
 
-class AlexaAudioHandler(AlexaAudioBaseHandler):
+class AlexaBwBHandler(AlexaAudioBaseHandler):
 
     def _build_audio_response(self, speech, title, card):
         session_attributes = {}
@@ -29,7 +29,7 @@ class AlexaAudioHandler(AlexaAudioBaseHandler):
         speech_output = speech
         # If the user either does not reply to the welcome message or says something
         # that is not understood, they will be prompted again with this text.
-        reprompt_text = "Reprompt text for the Alexa Test Deployment"
+        reprompt_text = ""
         should_end_session = True
 
         speechlet = self._build_speechlet_response(card_title, card_output, speech_output, reprompt_text, should_end_session)
@@ -49,13 +49,12 @@ class AlexaAudioHandler(AlexaAudioBaseHandler):
             'url': '',
             'token': ''
         })
-        # add additional song data here
+        #add more songs here
+        super(AlexaBwBHandler, self).__init__(app_id, log_level)
 
-        super(AlexaAudioHandler, self).__init__(app_id, log_level)
-
-    def on_system_exceptionencountered_request(self, event, context):
+    def on_system_exceptionencountered(self, event, context):
         try:
-            self.logger.error("ERROR: on_system_exceptionencountered_request: {0}".format(event))
+            self.logger.error("ERROR: on_system_exceptionencountered: {0}".format(event))
             self.logger.error("ERROR: Type: {0}".format(event['error']['type']))
             self.logger.error("ERROR: Msg: {0}".format(event['error']['message']))
         except:
@@ -63,48 +62,46 @@ class AlexaAudioHandler(AlexaAudioBaseHandler):
 
         return None
 
-    def on_invalid_response_request(self, event, context):
-        self.logger.error("on_invalid_response_request: {0}".format(event))
+    def on_invalid_response(self, event, context):
+        self.logger.error("on_invalid_response: {0}".format(event))
         return self.create_empty_response()
 
     def on_startover_intent(self, intent_request, session):
         return self._play_song()
 
     def on_stop_intent(self, intent_request, session):
-        self.logger.debug("AlexaAudioHandler.on_stop_intent")
+        self.logger.debug("AlexaBwBHandler.on_stop_intent")
         return self.create_stop_directive()
 
     def check_app_id(self, event):
-        return super(AlexaAudioHandler, self).check_app_id(event)
-
-    def on_session_started(self, session_started_request, session):
-        super(AlexaAudioHandler, self).on_session_started(session_started_request, session)
-
-    def on_intent(self, intent_request, session):
-        super(AlexaAudioHandler, self).on_intent(intent_request, session)
-
-    def on_yes_intent(self, intent_request, session):
-        return super(AlexaAudioHandler, self).on_yes_intent(intent_request, session)
-
-    def on_no_intent(self, intent_request, session):
-        return super(AlexaAudioHandler, self).on_no_intent(intent_request, session)
+        return super(AlexaBwBHandler, self).check_app_id(event)
 
     def on_processing_error(self, event, context, exc):
-        super(AlexaAudioHandler, self).on_processing_error(event, context, exc)
+        session_attributes = {}
+        speech_output = "I am having difficulty fulfilling your request"
 
-    def on_session_ended(self, session_end_request, session):
-        super(AlexaAudioHandler, self).on_session_ended(session_end_request, session)
+        reprompt_text = "I did not hear you, you can ask for train schedules like, ask Chicago Trains when the next train from starting station names goes to ending station name."
+        should_end_session = True
+
+        card_output = speech_output
+        speechlet = self._build_speechlet_response('BwB Error',
+                                                   card_output,
+                                                   speech_output,
+                                                   reprompt_text,
+                                                   should_end_session)
+
+        return self._build_response(session_attributes, speechlet)
 
 
-    def on_launch(self, launch_request, session):
-        self.logger.info("Executing on_launch")
+    def on_launchrequest(self, event, context):
+        self.logger.debug("Executing on_launch")
         return self._play_song()
 
     def _enqueue_song(self, current_token):
         song = random.choice(self.songs)
         url = song['url']
         token = song['token']
-        self.logger.info("_enqueue_song: {0}".format(song['name']))
+        self.logger.debug("_enqueue_song: {0}".format(song['name']))
         enqueue_response = self.create_enqueue_directive(current_token, token, url)
         self.logger.debug("Enqueue Response: {0}".format(enqueue_response))
         return enqueue_response
@@ -118,20 +115,20 @@ class AlexaAudioHandler(AlexaAudioBaseHandler):
         else:
             speech = "Playing {0}".format(song['name'])
         card = "Playing {0}".format(song['name'])
-        self.logger.info("_play_song: {0}".format(song['name']))
+        self.logger.debug("_play_song: {0}".format(song['name']))
         session_attributes = {
             'song': song
         }
 
         play_response = self.create_play_directive(token, url, "REPLACE_ALL", 0, speech, "BwB", card, session_attributes)
-        self.logger.info("Play Response: {0}".format(play_response))
+        self.logger.debug("Play Response: {0}".format(play_response))
         return play_response
 
     def on_help_intent(self, intent_request, session):
         session_attributes = {}
-        card_output = "You can hear the sounds of Band Name by saying, play some band music"
+        card_output = "You can hear the sizzling sounds of Better with Bacon by saying, play some bacon"
         speech_output = card_output
-        card_title = "Your Card Title"
+        card_title = "Better with Bacon"
 
         reprompt_text = "I did not hear you, {0}".format(speech_output)
         should_end_session = False
@@ -146,11 +143,12 @@ class AlexaAudioHandler(AlexaAudioBaseHandler):
     def on_next_intent(self, intent_request, session):
         return self._play_song()
 
-    def on_audioplayer_playbackfailed_request(self, event, context):
+    def on_audioplayer_playbackfailed(self, event, context):
         self.logger.debug("Executing on_audioplayer_playbackfailed_request")
-        self.logger.debug(event)
-
-        super(AlexaAudioHandler, self).on_audioplayer_playbackfailed_request(event, context)
+        try:
+            self.logger.debug(event)
+        except:
+            pass
 
     def on_resume_intent(self, intent_request, session):
         self.logger.debug("Executing on_resume_intent")
@@ -168,60 +166,55 @@ class AlexaAudioHandler(AlexaAudioBaseHandler):
     def on_shuffleoff_intent(self, intent_request, session):
         return self._build_audio_response("Shuffle off is not yet supported", "BwB", 'Shuffle off is not yet supported')
 
-    def on_playbackcontroller_playcommandissued_request(self, event, context):
-        super(AlexaAudioHandler, self).on_playbackcontroller_playcommandissued_request(event, context)
-
     def on_shuffleon_intent(self, intent_request, session):
         return self._build_audio_response("Shuffle on is not yet supported", "BwB", 'Shuffle on is not yet supported')
 
-    def on_audioplayer_playbackstarted_request(self, event, context):
+    def on_audioplayer_playbackstarted(self, event, context):
         self.logger.debug("Executing on_audioplayer_playbackstarted_request")
         return None
 
-    def on_playbackcontroller_previouscommandissued_request(self, event, context):
-        return super(AlexaAudioHandler, self).on_playbackcontroller_previouscommandissued_request(event, context)
-
-    def on_playbackcontroller_nextcommandissued_request(self, event, context):
-        return super(AlexaAudioHandler, self).on_playbackcontroller_nextcommandissued_request(event, context)
 
     def on_loopoff_intent(self, intent_request, session):
         return self._build_audio_response("Loop off is not yet supported", "BwB", 'Loop off is not yet supported')
 
-    def on_playbackcontroller_pausecommandissued_request(self, event, context):
-        self.logger.debug("Executing on_playbackcontroller_pausecommandissued_request")
+    def on_playbackcontroller_pausecommandissued(self, event, context):
         try:
-            self.logger.info(event)
+            self.logger.debug("Executing on_playbackcontroller_pausecommandissued_request")
+            self.logger.debug(event)
         except:
             pass
 
         return None
 
-    def on_audioplayer_playbackstopped_request(self, event, context):
+    def on_audioplayer_playbackstopped(self, event, context):
         self.logger.debug("Executing on_audioplayer_playbackstopped_request")
-        self.logger.debug("Executing on_audioplayer_playbackstopped_request: event: {0}".format(event))
+        try:
+            self.logger.debug("Executing on_audioplayer_playbackstopped_request: event: {0}".format(event))
+
+        except:
+            pass
 
         return None
 
     def on_pause_intent(self, intent_request, session):
         self.logger.debug("Executing on_pause_intent")
-        self.logger.debug("AlexaAudioHandler.on_pause_intent: intent_request: {0}".format(intent_request))
-        self.logger.debug("AlexaAudioHandler.on_pause_intent: session: {0}".format(session))
+        try:
+            self.logger.debug("AlexaBwBHandler.on_pause_intent: intent_request: {0}".format(intent_request))
+            self.logger.debug("AlexaBwBHandler.on_pause_intent: session: {0}".format(session))
+        except:
+            pass
 
         response = self.create_stop_directive()
         self.logger.debug("on_pause_intent response: {0}".format(response))
         return response
 
-    def on_audioplayer_playbacknearlyfinished_request(self, event, context):
+    def on_audioplayer_playbacknearlyfinished(self, event, context):
         self.logger.debug("Executing on_audioplayer_playbacknearlyfinished_request")
         current_token = event['request']['token']
         return self._enqueue_song(current_token)
 
     def on_loopon_intent(self, intent_request, session):
         return self._build_audio_response("Loop on is not yet supported", "BwB", 'Loop on is not yet supported')
-
-    def on_audioplayer_playbackfinished_request(self, event, context):
-        self.logger.debug("Executing on_audioplayer_playbackfinished_request")
-        return None
 
     def on_cancel_intent(self, intent_request, session):
         self.logger.debug("Executing on_cancel_intent")
@@ -230,7 +223,7 @@ class AlexaAudioHandler(AlexaAudioBaseHandler):
     def on_repeat_intent(self, intent_request, session):
         return self._play_song()
 
-    def on_playbaconintent(self, intent_request, session):
+    def on_playbaconintent_intent(self, intent_request, session):
         self.logger.debug("Executing on_playbacon_intent")
         return self._play_song()
 
