@@ -38,8 +38,8 @@ In this case, no assumption is made about the custom intent name, so the entire
 name is lower cased, then used in the creation of the dynamic method call.
 
 For Amazon Built-in requests such as AudioPlayer.PlaybackStarted, process request will
-call a method of the form:  on_<major name>_<minor name>_request, e.g.
-on_audioplayer_playbackstarted_request().
+call a method of the form:  on_<major name>_<minor name>, e.g.
+on_audioplayer_playbackstarted().
 
 If any of the dynamically called methods is not found, a NotImplementedError exception
 is raised.

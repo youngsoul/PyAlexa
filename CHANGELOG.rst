@@ -124,6 +124,10 @@ and they will be copied into a corresponding deployment directory.
 
 Changes:
 ~~~~~~~~
+* many of the abstract methods were removed, because with the AudioPlayer capability, also
+  came additional intents and request types.  Instead of trying to keep up with these, I have
+  opted for dynamically calling methods based on a convention for the intent and request
+  names.
 * added audio intent handling and generically call amazon intents, custom intents and audio requests
 * BREAKING CHANGE: on_start_over_intent needs to be renamed to on_startover_intent
 * BREAKING CHANGE: on_launch needs to be renamed to on_launchrequest and are passed event, context
