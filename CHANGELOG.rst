@@ -138,3 +138,10 @@ Changes:
 * added log level specification to ctor
 * added on_invalid_response_request abstract method
 * added create_alexa_audio_handler.py to create a starter template for audio applications
+
+0.2.1 (2016-12-17)
+------------------
+
+Changes:
+~~~~~~~~
+* fixed bug with getting intents
