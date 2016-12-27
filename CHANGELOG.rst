@@ -145,3 +145,17 @@ Changes:
 Changes:
 ~~~~~~~~
 * fixed bug with getting intents
+
+0.2.2 (2016-12-17)
+------------------
+
+Changes:
+~~~~~~~~
+* fixed bug when there is not requirements-test.txt file
+
+0.2.3 (2016-12-17)
+------------------
+
+Changes:
+~~~~~~~~
+* fixed bug in template generator of handler, change on_launch to on_launchrequest

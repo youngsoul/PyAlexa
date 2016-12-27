@@ -236,11 +236,13 @@ def main(argv):
 
     # standard requirements file
     install_requirements = _read_requirements()
-    _install_requirements(install_requirements, deployment_dir)
+    if install_requirements:
+        _install_requirements(install_requirements, deployment_dir)
 
     # test requirements file (requirements-test.txt)
     install_requirements = _read_test_requirements()
-    _install_test_requirements(install_requirements, deployment_dir)
+    if install_requirements:
+        _install_test_requirements(install_requirements, deployment_dir)
 
 
     deployment_num_file_name = "{0}/.deployment_number.txt".format(root_deployments_dir)

@@ -63,7 +63,7 @@ class AlexaDeploymentTestHandler(AlexaBaseHandler):
         return self._build_response(session_attributes, speechlet)
 
 
-    def on_launch(self, launch_request, session):
+    def on_launchrequest(self, launch_request, session):
         session_attributes = {}
         card_output = "Sample Card Output"
         speech_output = "Sample Speech Output"
