@@ -256,15 +256,10 @@ class AlexaBaseHandler(object):
         :param should_end_session:
         :return:
         """
-        return {
+        response =  {
             'outputSpeech': {
                 'type': 'PlainText',
                 'text': speech_output
-            },
-            'card': {
-                'type': 'Simple',
-                'title': card_title,
-                'content': card_output
             },
             'reprompt': {
                 'outputSpeech': {
@@ -274,6 +269,15 @@ class AlexaBaseHandler(object):
             },
             'shouldEndSession': should_end_session
         }
+
+        if card_output and card_title:
+            response['card'] = {
+                            'type': 'Simple',
+                            'title': card_title,
+                            'content': card_output
+                        }
+
+        return response
 
     def _build_response(self, session_attributes, speechlet_response):
         """

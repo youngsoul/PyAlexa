@@ -159,3 +159,10 @@ Changes:
 Changes:
 ~~~~~~~~
 * fixed bug in template generator of handler, change on_launch to on_launchrequest
+
+0.2.4 (2017-1-2)
+------------------
+
+Changes:
+~~~~~~~~
+* allow for optional card data in response
