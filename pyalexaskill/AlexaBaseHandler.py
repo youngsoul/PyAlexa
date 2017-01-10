@@ -312,7 +312,9 @@ class AlexaBaseHandler(object):
     def _slot_exists(self, slot_name, intent_request):
         intent = self._get_intent(intent_request)
         if intent is not None and 'slots' in intent:
-            return slot_name in intent['slots']
+            # alexa will send slots with a name but no 'value' element
+            # so check that both are there.
+            return slot_name in intent['slots'] and 'value' in intent['slots'][slot_name]
         else:
             return False
 

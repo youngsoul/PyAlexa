@@ -166,3 +166,10 @@ Changes:
 Changes:
 ~~~~~~~~
 * allow for optional card data in response
+
+0.2.5 (2017-1-9)
+------------------
+
+Changes:
+~~~~~~~~
+* when check if a slot exists, make sure its name AND value are present
