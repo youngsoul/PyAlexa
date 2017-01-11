@@ -173,3 +173,10 @@ Changes:
 Changes:
 ~~~~~~~~
 * when check if a slot exists, make sure its name AND value are present
+
+0.2.6 (2017-1-10)
+------------------
+
+Changes:
+~~~~~~~~
+* update sample app to make card_title a method variable

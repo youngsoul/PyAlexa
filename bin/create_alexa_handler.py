@@ -54,7 +54,9 @@ class AlexaDeploymentTestHandler(AlexaBaseHandler):
             speech_output = "I am having difficulty fulfilling your request. {0}".format(exc.message)
 
         card_output = speech_output
-        speechlet = self._build_speechlet_response(self.card_title,
+        card_title = "Processing Error Card Title"
+
+        speechlet = self._build_speechlet_response(card_title,
                                                    card_output,
                                                    speech_output,
                                                    reprompt_text,
@@ -67,10 +69,11 @@ class AlexaDeploymentTestHandler(AlexaBaseHandler):
         session_attributes = {}
         card_output = "Sample Card Output"
         speech_output = "Sample Speech Output"
+        card_title = "Launch Card Title"
 
         reprompt_text = "I did not hear you"
         should_end_session = False
-        speechlet = self._build_speechlet_response(self.card_title,
+        speechlet = self._build_speechlet_response(card_title,
                                                    card_output,
                                                    speech_output,
                                                    reprompt_text,
@@ -90,10 +93,11 @@ class AlexaDeploymentTestHandler(AlexaBaseHandler):
         should_end_session = True
         card_output = "Sample Card Output"
         speech_output = "Sample Speech Output"
+        card_title = "Intent Card Title"
 
         intent_name = self._get_intent_name(intent_request)
         if intent_name == "Your First Intent":
-            speechlet = self._build_speechlet_response(self.card_title,
+            speechlet = self._build_speechlet_response(card_title,
                                                        card_output,
                                                        speech_output,
                                                        reprompt_text,
@@ -102,7 +106,7 @@ class AlexaDeploymentTestHandler(AlexaBaseHandler):
             response = self._build_response(session_attributes, speechlet)
 
         elif intent_name == "Your Second Intent":
-            speechlet = self._build_speechlet_response(self.card_title,
+            speechlet = self._build_speechlet_response(card_title,
                                                        card_output,
                                                        speech_output,
                                                        reprompt_text,
@@ -121,10 +125,11 @@ class AlexaDeploymentTestHandler(AlexaBaseHandler):
         session_attributes = {}
         card_output = "Card Help"
         speech_output = "Speech Help"
+        card_title = "Help Card Title"
 
         reprompt_text = "I did not hear you, {0}".format(speech_output)
         should_end_session = False
-        speechlet = self._build_speechlet_response(self.card_title,
+        speechlet = self._build_speechlet_response(card_title,
                                                    card_output,
                                                    speech_output,
                                                    reprompt_text,
@@ -139,10 +144,11 @@ class AlexaDeploymentTestHandler(AlexaBaseHandler):
         session_attributes = {}
         card_output = "Thank you and Good-bye"
         speech_output = "Thank you and Good-bye"
+        card_title = "Cancel Card Title"
 
         reprompt_text = "{0}".format(speech_output)
         should_end_session = True
-        speechlet = self._build_speechlet_response(self.card_title,
+        speechlet = self._build_speechlet_response(card_title,
                                                    card_output,
                                                    speech_output,
                                                    reprompt_text,
