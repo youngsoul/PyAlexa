@@ -24,7 +24,7 @@ Alexa Requests
 --------------
 For Alexa requests, this class will look for methods of the form:
 
-def on_<request name>
+    def on_<request name>
 
 For example, the LaunchRequest will look for a method of the name:
 
@@ -34,7 +34,7 @@ Alexa/Amazon Intents
 --------------------
 For Alexa intents, this class will look for methods of the form:
 
-def on_<intentname>_intent
+    def on_<intentname>_intent
 
 For example,
 
@@ -42,29 +42,28 @@ AMAZON.YesIntent
 
 will look for a method of the name:
 
-def on_yes_intent(intent_request, session)
+    def on_yes_intent(intent_request, session)
 
 AMAZON.HelpIntent
 
 will look fr a method of the name:
 
-def on_help_intent(intent_request, session)
+    def on_help_intent(intent_request, session)
 
 Application Defined Intents
 ---------------------------
 
 And intents that are application defined will follow the form:
 
-def on_<application intent name>_intent(intent_request, session)
+    def on_<application intent name>_intent(intent_request, session)
 
 
 abstract method
 ---------------
 The only abstract method that has to be implemented is the following:
 
-code:: python
 
-        def on_processing_error(self, event, context, exc):
+    def on_processing_error(self, event, context, exc):
 
 
 
