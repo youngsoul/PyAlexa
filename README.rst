@@ -11,16 +11,62 @@ Skill set and two scripts to help with the creation of the main entry point and 
 of the AWS Lambda Function for the Alexa Skill Set.
 
 
-
 AlexaBaseHandler class
 ----------------------
 
 The AlexaBaseHandler class is an abstract class that provides the necessary
-framework to build the necessary response hooks for an Alexa application.
+framework to build the response hooks for an Alexa application.
 
-All of the abstract methods of this class must be implemented by the
-concrete implementation class.  See the base class for details on the
-abstract methods.
+It has a single abstract method, and it will dynamically call methods based on the
+Alexa intent or request.
+
+Alexa Requests
+--------------
+For Alexa requests, this class will look for methods of the form:
+
+def on_<request name>
+
+For example, the LaunchRequest will look for a method of the name:
+
+    def on_launchrequest(self, launch_request, session):
+
+Alexa/Amazon Intents
+--------------------
+For Alexa intents, this class will look for methods of the form:
+
+def on_<intentname>_intent
+
+For example,
+
+AMAZON.YesIntent
+
+will look for a method of the name:
+
+def on_yes_intent(intent_request, session)
+
+AMAZON.HelpIntent
+
+will look fr a method of the name:
+
+def on_help_intent(intent_request, session)
+
+Application Defined Intents
+---------------------------
+
+And intents that are application defined will follow the form:
+
+def on_<application intent name>_intent(intent_request, session)
+
+
+abstract method
+---------------
+The only abstract method that has to be implemented is the following:
+
+code:: python
+
+        def on_processing_error(self, event, context, exc):
+
+
 
 process_request
 ---------------
@@ -85,6 +131,9 @@ This file is the standard Python requirements file.  This file is used by the
 create_deployment.py script to install the necessary 3rd party libraries that
 your Alexa skill might need.  Any library specified in the requirements.txt
 file will be installed into your deployment directory.
+
+Create a zip file of all code necessary for AWS Lambda
+======================================================
 
 create_aws_lambda.py
 --------------------
