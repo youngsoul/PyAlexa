@@ -180,3 +180,13 @@ Changes:
 Changes:
 ~~~~~~~~
 * update sample app to make card_title a method variable
+
+0.2.7 (2017-10-15)
+------------------
+
+Changes:
+~~~~~~~~
+* updated create scripts for python 3 support
+* added command line options for create scripts
+* added create_test_deployment.py which will create all artifacts for a simple deployment
+

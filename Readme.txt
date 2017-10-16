@@ -56,7 +56,14 @@ file will be installed into your deployment directory.
 This script creates a zip file per the Amazon lambda specification, such that
 it is suitable to upload as your lambda function implementation.
 
+option: -r [Optional]  to specify root directory of project.  Default is the current directory
+
 <h2>create_aws_main</h2>
+
+option: -r [Optional] to specify root directory of project.  Default is the current directory
+option: -f [Optional] filename to use for the main lambda entry point. e.g. my_main.py
+option: -c [Optional] classname of the handler to instantiate in the main entry point.
+
 This script creates a template main entry point
 
 All deployments are stored in the deployments subdirectory and follow the naming
@@ -72,6 +79,15 @@ variable in the create_deployment.py file.
 When this script is done running, there should be a 'deployment_n.zip' file in the deployments directory.
 It is that file that needs to be upload to the Amazon Lambda console.
 
+<h2>create_alexa_handler</h2>
+
+option: -r [Optional] to specify root directory of project.  Default is the current directory
+option: -t [Optional] true, then include a test deployment method
+option: -c [Optional] classname of the handler to instantiate in the main entry point.
+
+<h2>create_alexa_test_skills</h2>
+
+This will create a simple utterance and schema file.
 
 <h3>Useful links:</h3>
 

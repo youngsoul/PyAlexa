@@ -4,7 +4,7 @@ import os
 
 from setuptools import setup, find_packages
 
-__version__ = "0.2.6"
+__version__ = "0.2.7"
 __title__ = "pyalexa-skill"
 __description__ = "Python module with a base class to support an Alexa skill set, and scripts to build an AWS python distibution"
 __uri__ = "https://github.com/youngsoul/PyAlexa"
@@ -65,5 +65,5 @@ if __name__ == "__main__":
         zip_safe=False,
         classifiers=CLASSIFIERS,
         install_requires=INSTALL_REQUIRES,
-        scripts=['bin/create_aws_lambda.py','bin/create_aws_main.py', 'bin/create_alexa_handler.py', 'bin/create_alexa_test_skills.py','bin/create_alexa_audio_handler.py']
+        scripts=['bin/create_aws_lambda.py','bin/create_aws_main.py', 'bin/create_alexa_handler.py', 'bin/create_alexa_test_skills.py','bin/create_alexa_audio_handler.py', 'bin/create_test_deployment.py']
     )

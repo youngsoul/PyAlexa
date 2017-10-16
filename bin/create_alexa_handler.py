@@ -10,11 +10,12 @@ Script will create a concrete implementation of the Alexa Handler.
 
 """
 
+# {0} - Classname
 handler_file_template = """
 from pyalexaskill.AlexaBaseHandler import AlexaBaseHandler
 
 
-class AlexaDeploymentTestHandler(AlexaBaseHandler):
+class %%classname%%(AlexaBaseHandler):
 
     # Sample concrete implementation of the AlexaBaseHandler to test the
     # deployment scripts and process.
@@ -170,34 +171,51 @@ class AlexaDeploymentTestHandler(AlexaBaseHandler):
 
 """
 
+test_deployment_intent_method = """
+
+    def on_deploymentintent_intent(self, intent_request, session):
+        return self._test_response("Test Deployment Intent ")
+"""
 
 def main(argv):
+    default_handler_class_name = 'AlexaDeploymentTestHandler'
+    include_test_deployment_intent_method = False
     root_project_dir = ''
     template_file_name = 'AlexaHandler_template_' + ''.join(
         random.choice(string.ascii_lowercase + string.digits) for _ in range(5)) + '.py'
 
     try:
-        opts, args = getopt.getopt(argv, "hr:", ["root="])
+        opts, args = getopt.getopt(argv, "hr:c:t:", ["root=", "classname=", "testintent="])
     except getopt.GetoptError:
-        print 'create_alexa_handler.py -r <root project dir>'
-        print 'if -r option not supplied it will look for PWD environment variable'
+        print('create_alexa_handler.py -r <root project dir> -c <class name>')
+        print('if -r option not supplied it will look for PWD environment variable')
+        print('if -c classname of handler, default is AlexaDeploymentTestHandler')
+        print('if -t False (default) do not include test deployment intent method. True, include test deployment intent method')
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
-            print 'create_alexa_handler.py -r <root project dir>'
-            print 'if -r option not supplied it will look for PWD environment variable'
+            print('create_alexa_handler.py -r <root project dir>')
+            print('if -r option not supplied it will look for PWD environment variable')
+            print('if -c classname of handler, default is AlexaDeploymentTestHandler')
+            print('if -t False (default) do not include test deployment intent method. True, include test deployment intent method')
             sys.exit()
         elif opt in ("-r", "--root"):
             root_project_dir = arg
-
+        elif opt in ("-c", "--classname"):
+            default_handler_class_name = arg
+            template_file_name = "{0}.py".format(arg)
+        elif opt in ("-t", "--testintent"):
+            if arg.lower() == "true":
+                include_test_deployment_intent_method = True
     if not root_project_dir:
         root_project_dir = os.environ.get("PWD")
         if root_project_dir is None:
             raise ValueError("Must supply -r or --root option")
 
     with open("{0}/{1}".format(root_project_dir, template_file_name), "w") as text_file:
-        text_file.write(handler_file_template)
-
+        text_file.write(handler_file_template.replace("%%classname%%", default_handler_class_name))
+        if include_test_deployment_intent_method:
+            text_file.write(test_deployment_intent_method)
 
 if __name__ == "__main__":
     main(sys.argv[1:])
