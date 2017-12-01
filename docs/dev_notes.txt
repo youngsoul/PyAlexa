@@ -59,3 +59,4 @@ pip install -i https://testpypi.python.org/pypi pyalexa-skill
 -- TO TEST IN PROJECT WITHOUT HAVING TO UPLOAD
 from your project you want this library in:
 pip install -e /Users/youngsoul/Documents/Development/PythonDev/PyAlexa
+python setup

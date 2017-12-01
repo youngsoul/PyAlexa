@@ -48,6 +48,8 @@ def _read_test_requirements():
 def _read_requirements():
     filename = os.path.join(root_project_dir, "requirements.txt")
     if not os.path.exists(filename):
+        print("WARNING: A 'requirements.txt' file was not found and at a minimum it is expected that pyalexa-skill and its dependents would be in there.")
+        print("run:  pip freeze > requirements.txt   to generate this file.")
         return None
 
     with open(filename, 'r') as f:
@@ -72,7 +74,7 @@ def _make_deployment_dir():
     max_deployment_number = -1
     for deployment_dir in all_deployment_directories:
         dir_name_elements = deployment_dir.split("_")
-        if (len(dir_name_elements) == 2):
+        if len(dir_name_elements) == 2:
             if int(dir_name_elements[1]) > max_deployment_number:
                 max_deployment_number = int(dir_name_elements[1])
 

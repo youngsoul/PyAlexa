@@ -190,7 +190,7 @@ Changes:
 * added command line options for create scripts
 * added create_test_deployment.py which will create all artifacts for a simple deployment
 
-0.2.8 (2017-11-01)
+0.2.8 (2017-12-01)
 ------------------
 
 Changes:
