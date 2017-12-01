@@ -190,6 +190,12 @@ activate your virtualenv and execute like: ::
     create_alexa_test_skills.py
 
 
+create_test_deployment.py
+-------------------------
+This script calls all of the necessary scripts to create a sample deployment ready to
+upload to AWS Lambda, and it creates sample utterances and intent schema.
+
+
 Test Project
 ------------
 https://github.com/youngsoul/PyAlexaSkillTest
