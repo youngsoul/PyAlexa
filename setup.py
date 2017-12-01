@@ -4,14 +4,14 @@ import os
 
 from setuptools import setup, find_packages
 
-__version__ = "0.2.7"
+__version__ = "0.2.8"
 __title__ = "pyalexa-skill"
 __description__ = "Python module with a base class to support an Alexa skill set, and scripts to build an AWS python distibution"
 __uri__ = "https://github.com/youngsoul/PyAlexa"
 __author__ = "Patrick Ryan"
 __email__ = "pat_ryan_99@yahoo.com"
 __license__ = "Public Domain"
-__copyright__ = "Copyright (c) 2016 Patrick Ryan"
+__copyright__ = "Copyright (c) 2017/2018 Patrick Ryan"
 
 ###############################################################################
 
@@ -29,10 +29,12 @@ CLASSIFIERS = [
     "Programming Language :: Python :: 2.7",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.4",
-    "Programming Language :: Python :: 3.5",
+    "Programming Language :: Python :: 3.6",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-INSTALL_REQUIRES = []
+INSTALL_REQUIRES = [
+    'dpath >= 1.4.0'
+]
 
 ###############################################################################
 

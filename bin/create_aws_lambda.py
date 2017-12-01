@@ -35,7 +35,7 @@ deployment_files = []
 
 
 def _read_test_requirements():
-    filename = "{0}/requirements-test.txt".format(root_project_dir)
+    filename = os.path.join(root_project_dir, "requirements-test.txt")
     if not os.path.exists(filename):
         return None
 
@@ -46,7 +46,7 @@ def _read_test_requirements():
 
 
 def _read_requirements():
-    filename = "{0}/requirements.txt".format(root_project_dir)
+    filename = os.path.join(root_project_dir, "requirements.txt")
     if not os.path.exists(filename):
         return None
 
@@ -80,7 +80,7 @@ def _make_deployment_dir():
         max_deployment_number = 0
 
     deployment_name = "deployment_{0}".format(max_deployment_number + 1)
-    new_deployment_dir_path = "{0}/{1}".format(root_deployments_dir, deployment_name)
+    new_deployment_dir_path = os.path.join(root_deployments_dir, deployment_name)
 
     if not os.path.exists(new_deployment_dir_path):
         os.mkdir(new_deployment_dir_path)
@@ -117,8 +117,9 @@ def _install_requirements(deployment_requirements, deployment_dir):
 def _copy_deployment_files(deployment_data):
     for item in deployment_data:
         if os.path.exists(item['from']):
-            cmd = "cp {0} {1}".format(item['from'], item['to']).split()
-            return_code = subprocess.call(cmd, shell=False)
+            shutil.copy2(item['from'], item['to'])
+            # cmd = "cp {0} {1}".format(item['from'], item['to']).split()
+            # return_code = subprocess.call(cmd, shell=False)
         else:
             raise NameError("Deployment file not found [{0}]".format(item['from']))
 
@@ -211,23 +212,26 @@ def main(argv):
         elif opt in ("-r", "--root"):
             root_project_dir = arg
         elif opt in ("-i", "--include"):
-            include_files = arg
+            # incase the options are surrounded by quotes
+            include_files = arg.replace("'",'')
 
     if not root_project_dir:
         root_project_dir = os.environ.get("PWD")
         if root_project_dir is None:
-            raise ValueError("Must supply -r or --root option")
+            root_project_dir = os.getcwd()
+            if root_project_dir is None:
+                raise ValueError("Must supply -r or --root option")
 
     if not include_files:
         raise ValueError("Must supply -i or --include option")
 
-    root_deployments_dir = "{0}/deployments".format(root_project_dir)
+    root_deployments_dir = os.path.join(root_project_dir, 'deployments')   #"{0}/deployments".format(root_project_dir)
     (deployment_dir, deployment_name) = _make_deployment_dir()
 
     for include_file in include_files.split(","):
         d = {
-            "from": "{0}/{1}".format(root_project_dir, include_file.strip()),
-            "to": "{0}/{1}".format(deployment_dir, include_file.strip())
+            "from": os.path.join(root_project_dir, include_file.strip()),
+            "to": os.path.join(deployment_dir, include_file.strip())
         }
         make_target_dirs([d['to']])
         deployment_files.append(d)
@@ -245,7 +249,7 @@ def main(argv):
         _install_test_requirements(install_requirements, deployment_dir)
 
 
-    deployment_num_file_name = "{0}/.deployment_number.txt".format(root_deployments_dir)
+    deployment_num_file_name = os.path.join(root_deployments_dir, '.deployment_number.txt') #"{0}/.deployment_number.txt".format(root_deployments_dir)
     if not os.path.isfile(deployment_num_file_name):
         # first time - be safe and start at deployment 100
         with open(deployment_num_file_name, 'w') as f:
@@ -258,15 +262,16 @@ def main(argv):
             next_deployment_number = int(line1.strip()) + 1
         except:
             next_deployment_number = 1
-        while os.path.exists(
-                "{0}/deployment_{1}".format(root_deployments_dir, next_deployment_number)) or os.path.exists(
-                "{0}/deployment_{1}.zip".format(root_deployments_dir, next_deployment_number)):
+
+        deployment_dir_path = os.path.join(root_deployments_dir, "deployment_{0}".format(next_deployment_number))
+        deployment_zip_path = os.path.join(root_deployments_dir, "deployment_{0}.zip".format(next_deployment_number))
+        while os.path.exists(deployment_dir_path) or os.path.exists(deployment_zip_path):
             next_deployment_number = next_deployment_number + 1
 
         f.seek(0)
         f.write("{0}\n".format(next_deployment_number))
 
-    deployment_zip_filename = "{0}/deployment_{1}.zip".format(root_deployments_dir, next_deployment_number)
+    deployment_zip_filename = os.path.join(root_deployments_dir, "deployment_{0}.zip".format(next_deployment_number))
     zipdir(deployment_dir, deployment_zip_filename)
     shutil.rmtree(deployment_dir, ignore_errors=True)
     print("Created deployment zip file: {0}".format(deployment_zip_filename))

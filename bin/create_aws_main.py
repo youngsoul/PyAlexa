@@ -86,10 +86,13 @@ def main(argv):
     if not root_project_dir:
         root_project_dir = os.environ.get("PWD")
         if root_project_dir is None:
-            raise ValueError("Must supply -r or --root option")
+            root_project_dir = os.getcwd()
+            if root_project_dir is None:
+                raise ValueError("Must supply -r or --root option")
 
-    with open("{0}/{1}".format(root_project_dir, main_file_name), "w") as text_file:
+    with open(os.path.join(root_project_dir, main_file_name), "w") as text_file:
         text_file.write(main_file_template.format(default_deployment_handler_filename, default_deployment_handler_classname))
 
+    print("Created main template file: {}".format(main_file_name))
 if __name__ == "__main__":
     main(sys.argv[1:])

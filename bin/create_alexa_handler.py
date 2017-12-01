@@ -210,12 +210,16 @@ def main(argv):
     if not root_project_dir:
         root_project_dir = os.environ.get("PWD")
         if root_project_dir is None:
-            raise ValueError("Must supply -r or --root option")
+            root_project_dir = os.getcwd()
+            if root_project_dir is None:
+                raise ValueError("Must supply -r or --root option")
 
-    with open("{0}/{1}".format(root_project_dir, template_file_name), "w") as text_file:
+    with open(os.path.join(root_project_dir, template_file_name), "w") as text_file:
         text_file.write(handler_file_template.replace("%%classname%%", default_handler_class_name))
         if include_test_deployment_intent_method:
             text_file.write(test_deployment_intent_method)
+
+    print("Created Alexa Handler template: {}".format(template_file_name))
 
 if __name__ == "__main__":
     main(sys.argv[1:])

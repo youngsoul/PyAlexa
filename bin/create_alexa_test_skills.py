@@ -50,17 +50,24 @@ def main(argv):
     if not root_project_dir:
         root_project_dir = os.environ.get("PWD")
         if root_project_dir is None:
-            raise ValueError("Must supply -r or --root option")
+            root_project_dir = os.getcwd()
+            if root_project_dir is None:
+                raise ValueError("Must supply -r or --root option")
 
 
-    root_deployments_dir = "{0}/alexa_skills/deployment_test2".format(root_project_dir)
+    root_deployments_dir = os.path.join(root_project_dir, "alexa_skills", "deployment_test2")
     _mkdirp(root_deployments_dir)
 
-    with open("{0}/{1}".format(root_deployments_dir, "deployment_intent_schema.json"), "w") as text_file:
+    p = os.path.join(root_deployments_dir, "deployment_intent_schema.json")
+    with open(p, "w") as text_file:
         text_file.write(intent_template)
 
-    with open("{0}/{1}".format(root_deployments_dir, "sample_utterance.txt"), "w") as text_file:
+    p2 = os.path.join(root_deployments_dir, "sample_utterance.txt")
+    with open( p2, "w") as text_file:
         text_file.write(utterance_template)
+
+    print("Created Deployment Intent Schema: {}".format(p))
+    print("Created Sample Utterance: {}".format(p2))
 
 if __name__ == "__main__":
     main(sys.argv[1:])
