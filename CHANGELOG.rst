@@ -196,3 +196,12 @@ Changes:
 Changes:
 ~~~~~~~~
 * updated all scripts to work on windows
+
+0.2.9 (2019-2-14)
+------------------
+
+Changes:
+~~~~~~~~
+* add -l, --libraries option to take name of requirements file so you can use something different than requirements.txt or requirements_test.txt
+
+

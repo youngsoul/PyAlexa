@@ -33,6 +33,7 @@ root_project_dir = ''
 # file will be included in the deployment.
 deployment_files = []
 
+default_requirements_file_name = "requirements.txt"
 
 def _read_test_requirements():
     filename = os.path.join(root_project_dir, "requirements-test.txt")
@@ -46,7 +47,7 @@ def _read_test_requirements():
 
 
 def _read_requirements():
-    filename = os.path.join(root_project_dir, "requirements.txt")
+    filename = os.path.join(root_project_dir, default_requirements_file_name)
     if not os.path.exists(filename):
         print("WARNING: A 'requirements.txt' file was not found and at a minimum it is expected that pyalexa-skill and its dependents would be in there.")
         print("run:  pip freeze > requirements.txt   to generate this file.")
@@ -196,14 +197,15 @@ def make_target_dirs(target_paths):
 
 
 def main(argv):
-    global root_deployments_dir, root_project_dir
+    global root_deployments_dir, root_project_dir, default_requirements_file_name
     include_files = ''
 
     try:
-        opts, args = getopt.getopt(argv, "hr:i:", ["root=", "include="])
+        opts, args = getopt.getopt(argv, "hr:i:l:", ["root=", "include=", "libraries"])
     except getopt.GetoptError:
-        print('create_aws_lambda.py -r <root project dir> -i <include files>')
+        print('create_aws_lambda.py -r <root project dir> -i <include files> -l <file of python libraries, e.g. requirements.txt>')
         print('if -r option not supplied it will look for PWD environment variable')
+        print('if -l option is not supplied, the default library file will be requirements.txt')
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
@@ -216,6 +218,8 @@ def main(argv):
         elif opt in ("-i", "--include"):
             # incase the options are surrounded by quotes
             include_files = arg.replace("'",'')
+        elif opt in ("-l", "--libraries"):
+            default_requirements_file_name = arg
 
     if not root_project_dir:
         root_project_dir = os.environ.get("PWD")
@@ -226,6 +230,8 @@ def main(argv):
 
     if not include_files:
         raise ValueError("Must supply -i or --include option")
+
+    print(f"Using Library file: {default_requirements_file_name}")
 
     root_deployments_dir = os.path.join(root_project_dir, 'deployments')   #"{0}/deployments".format(root_project_dir)
     (deployment_dir, deployment_name) = _make_deployment_dir()
