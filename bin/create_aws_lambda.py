@@ -47,16 +47,17 @@ def _read_test_requirements():
 
 
 def _read_requirements():
-    filename = os.path.join(root_project_dir, default_requirements_file_name)
-    if not os.path.exists(filename):
-        print("WARNING: A 'requirements.txt' file was not found and at a minimum it is expected that pyalexa-skill and its dependents would be in there.")
-        print("run:  pip freeze > requirements.txt   to generate this file.")
-        return None
+    if default_requirements_file_name:
+        filename = os.path.join(root_project_dir, default_requirements_file_name)
+        if not os.path.exists(filename):
+            print("WARNING: A 'requirements.txt' file was not found and at a minimum it is expected that pyalexa-skill and its dependents would be in there.")
+            print("run:  pip freeze > requirements.txt   to generate this file.")
+            return None
 
-    with open(filename, 'r') as f:
-        install_requirements = f.readlines()
+        with open(filename, 'r') as f:
+            install_requirements = f.readlines()
 
-    return install_requirements
+        return install_requirements
 
 
 def _get_immediate_subdirectories(a_dir):
