@@ -204,4 +204,11 @@ Changes:
 ~~~~~~~~
 * add -l, --libraries option to take name of requirements file so you can use something different than requirements.txt or requirements_test.txt
 
+0.3.0 (2019-2-14)
+------------------
+
+Changes:
+~~~~~~~~
+* allow for empty -l parameter to mean no requirements file
+
 

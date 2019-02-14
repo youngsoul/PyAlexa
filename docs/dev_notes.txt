@@ -38,12 +38,16 @@ twine upload -r test dist/pyalexa-skill-1.0.0*
 -- to register with pypi
 python setup.py register
 
+-- **********  upload to pypi ************
 -- to upload a new version of the module
 update setup.py by changing the version number
 * activate virtual env
 source ../VirtualEnvs/AlexaPython27Env/bin/activate
 python setup.py sdist
-twine upload dist/pyalexa-skill-0.2.7*
+* may need to login
+twine upload dist/pyalexa-skill-0.3.0*
+-- ***************************************
+
 
 -- to upload a TEST version of the module
 * update setup.py
