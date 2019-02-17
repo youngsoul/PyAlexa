@@ -23,6 +23,10 @@ to be in the requirements.txt file.
 The implementation files are expected to be in the root project directory, and
 this command does not currently support deeply nested file structures.
 
+AWS Instructions for how to more manually create a zip distribution for lambda
+https://docs.aws.amazon.com/lambda/latest/dg/lambda-python-how-to-create-deployment-package.html
+
+
 """
 
 root_deployments_dir = ''
@@ -213,6 +217,7 @@ def main(argv):
             print('create_aws_lambda.py -r <root project dir> -i <include files>')
             print('if -r option not supplied it will look for PWD environment variable')
             print('<include files> are relative to root project dir')
+            print('-l parameter is optional, but if specified should point to a file formatted like a requirements.txt that has the lambda dependencies')
             sys.exit()
         elif opt in ("-r", "--root"):
             root_project_dir = arg
